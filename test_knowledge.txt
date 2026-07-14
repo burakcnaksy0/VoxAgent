@@ -1,0 +1,5 @@
+VoxAgent is an AI voice assistant platform designed for B2B agencies. 
+It supports inbound and outbound calls, fallback messaging via SMS and WhatsApp using Twilio, and advanced voice AI using VAPI.
+Agencies can create multiple AI assistants, configure their system prompts, voices (e.g., Nova, Alloy), and link them to knowledge bases for dynamic responses.
+Billing is handled via Stripe, with plans including Starter ($49/mo), Growth ($149/mo), and Pro ($399/mo).
+Overage minutes are billed at $0.15/min at the end of the billing cycle.
