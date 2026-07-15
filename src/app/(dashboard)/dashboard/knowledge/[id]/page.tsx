@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Upload, FileText, Loader2, HardDrive, Trash2 } from 'lucide-react'
+import { ConfirmDeleteModal } from '@/components/ui/confirm-delete-modal'
 
 export default function KnowledgeBaseDetailsPage() {
   const params = useParams()
@@ -18,6 +19,10 @@ export default function KnowledgeBaseDetailsPage() {
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const [selectedChunkId, setSelectedChunkId] = useState<string | null>(null)
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const fetchKBAndChunks = async () => {
     const supabase = createClient()
@@ -93,22 +98,27 @@ export default function KnowledgeBaseDetailsPage() {
     }
   }
 
-  const handleDeleteChunk = async (chunkId: string) => {
-    if (!confirm('Are you sure you want to delete this chunk?')) return
+  const handleDeleteChunk = async () => {
+    if (!selectedChunkId) return
+    setIsDeleting(true)
     const supabase = createClient()
     try {
       const { error } = await supabase
         .from('knowledge_chunks')
         .delete()
-        .eq('id', chunkId)
+        .eq('id', selectedChunkId)
 
       if (error) throw error
 
       toast.success('Chunk deleted successfully')
-      setChunks(prev => prev.filter(c => c.id !== chunkId))
+      setChunks(prev => prev.filter(c => c.id !== selectedChunkId))
+      setIsDeleteOpen(false)
     } catch (err: any) {
       console.error(err)
       toast.error('Failed to delete chunk: ' + err.message)
+    } finally {
+      setIsDeleting(false)
+      setSelectedChunkId(null)
     }
   }
 
@@ -201,7 +211,10 @@ export default function KnowledgeBaseDetailsPage() {
                         <div className="flex items-center gap-2">
                           <span>{chunk.metadata?.source_filename || 'Unknown source'}</span>
                           <button
-                            onClick={() => handleDeleteChunk(chunk.id)}
+                            onClick={() => {
+                              setSelectedChunkId(chunk.id);
+                              setIsDeleteOpen(true);
+                            }}
                             className="text-muted-foreground hover:text-destructive transition-colors p-1 rounded hover:bg-destructive/10"
                             title="Delete Chunk"
                           >
@@ -219,6 +232,18 @@ export default function KnowledgeBaseDetailsPage() {
         </div>
 
       </div>
+
+      <ConfirmDeleteModal
+        isOpen={isDeleteOpen}
+        onClose={() => {
+          setIsDeleteOpen(false);
+          setSelectedChunkId(null);
+        }}
+        onConfirm={handleDeleteChunk}
+        title="Delete Knowledge Chunk"
+        description="Are you sure you want to delete this chunk? This action cannot be undone."
+        isDeleting={isDeleting}
+      />
     </div>
   )
 }

@@ -28,9 +28,9 @@ export async function deductCallDuration(agencyId: string, durationSeconds: numb
 
     // Map plan to monthly limit
     let limit = 10 // default trial
-    if (agency.plan === 'starter') limit = 500
-    else if (agency.plan === 'growth') limit = 1500
-    else if (agency.plan === 'pro') limit = 3000
+    if (agency.plan === 'starter') limit = 450
+    else if (agency.plan === 'growth') limit = 1100
+    else if (agency.plan === 'pro') limit = 1800
     else if (agency.plan === 'enterprise') limit = 10000
 
     // 2. Try calling the atomic PostgreSQL function first
@@ -105,9 +105,9 @@ export async function getAvailableMinutes(agencyId: string, supabase: any): Prom
     if (!agency) return 0
 
     let limit = 10
-    if (agency.plan === 'starter') limit = 500
-    else if (agency.plan === 'growth') limit = 1500
-    else if (agency.plan === 'pro') limit = 3000
+    if (agency.plan === 'starter') limit = 450
+    else if (agency.plan === 'growth') limit = 1100
+    else if (agency.plan === 'pro') limit = 1800
     else if (agency.plan === 'enterprise') limit = 10000
 
     const period = new Date().toISOString().slice(0, 7)

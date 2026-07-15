@@ -68,9 +68,9 @@ export default function BillingPage() {
 
       // Determine standard monthly limit
       let standardLimit = 10 // Trial
-      if (agency.plan === 'starter') standardLimit = 500
-      else if (agency.plan === 'growth') standardLimit = 1500
-      else if (agency.plan === 'pro') standardLimit = 3000
+      if (agency.plan === 'starter') standardLimit = 450
+      else if (agency.plan === 'growth') standardLimit = 1100
+      else if (agency.plan === 'pro') standardLimit = 1800
       else if (agency.plan === 'enterprise') standardLimit = 10000
 
       const currentUsed = Number(usage?.minutes_used || 0)
@@ -310,7 +310,7 @@ export default function BillingPage() {
               <ul className="space-y-2.5 text-sm text-zinc-400 mb-6">
                 <li className="flex items-center space-x-2">
                   <CheckCircle2 className="w-4 h-4 text-indigo-400 shrink-0" />
-                  <span><strong>500</strong> Outbound Call Minutes</span>
+                  <span><strong>450</strong> Outbound Call Minutes</span>
                 </li>
                 <li className="flex items-center space-x-2">
                   <CheckCircle2 className="w-4 h-4 text-indigo-400 shrink-0" />
@@ -359,7 +359,7 @@ export default function BillingPage() {
               <ul className="space-y-2.5 text-sm text-zinc-400 mb-6">
                 <li className="flex items-center space-x-2">
                   <CheckCircle2 className="w-4 h-4 text-purple-400 shrink-0" />
-                  <span><strong>1,500</strong> Outbound Call Minutes</span>
+                  <span><strong>1,100</strong> Outbound Call Minutes</span>
                 </li>
                 <li className="flex items-center space-x-2">
                   <CheckCircle2 className="w-4 h-4 text-purple-400 shrink-0" />
@@ -405,7 +405,7 @@ export default function BillingPage() {
               <ul className="space-y-2.5 text-sm text-zinc-400 mb-6">
                 <li className="flex items-center space-x-2">
                   <CheckCircle2 className="w-4 h-4 text-indigo-400 shrink-0" />
-                  <span><strong>3,000</strong> Outbound Call Minutes</span>
+                  <span><strong>1,800</strong> Outbound Call Minutes</span>
                 </li>
                 <li className="flex items-center space-x-2">
                   <CheckCircle2 className="w-4 h-4 text-indigo-400 shrink-0" />
