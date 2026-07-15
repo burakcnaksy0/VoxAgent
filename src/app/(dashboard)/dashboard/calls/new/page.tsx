@@ -35,9 +35,9 @@ export default function NewCallPage() {
         
         if (assistantsRes.ok) {
           const data = await assistantsRes.json()
-          setAssistants(data.assistants || [])
-          if (data.assistants?.length > 0) {
-            setFormData(prev => ({ ...prev, assistantId: data.assistants[0].id }))
+          setAssistants(data || [])
+          if (data?.length > 0) {
+            setFormData(prev => ({ ...prev, assistantId: data[0].id }))
           }
         }
       } catch (error) {

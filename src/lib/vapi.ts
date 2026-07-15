@@ -41,6 +41,7 @@ export interface VapiAssistantConfig {
   voiceId?: string
   language?: string
   serverUrl?: string
+  hasKnowledgeBase?: boolean
 }
 
 export async function createVapiAssistant(apiKey: string, config: VapiAssistantConfig) {
@@ -71,6 +72,25 @@ export async function createVapiAssistant(apiKey: string, config: VapiAssistantC
         language: config.language || 'en',
       },
       serverUrl: config.serverUrl,
+      tools: config.hasKnowledgeBase
+        ? [
+            {
+              type: 'function',
+              name: 'search_knowledge_base',
+              description: 'Searches the agency knowledge base for answers to user questions.',
+              parameters: {
+                type: 'object',
+                properties: {
+                  query: {
+                    type: 'string',
+                    description: 'The search query to match against the knowledge base documents.'
+                  }
+                },
+                required: ['query']
+              }
+            }
+          ]
+        : [],
     },
   })
 }
@@ -95,6 +115,28 @@ export async function updateVapiAssistant(
   }
   if (config.firstMessage !== undefined) body.firstMessage = config.firstMessage
   if (config.endCallMessage !== undefined) body.endCallMessage = config.endCallMessage
+  if (config.serverUrl !== undefined) body.serverUrl = config.serverUrl
+  if (config.hasKnowledgeBase !== undefined) {
+    body.tools = config.hasKnowledgeBase
+      ? [
+          {
+            type: 'function',
+            name: 'search_knowledge_base',
+            description: 'Searches the agency knowledge base for answers to user questions.',
+            parameters: {
+              type: 'object',
+              properties: {
+                query: {
+                  type: 'string',
+                  description: 'The search query to match against the knowledge base documents.'
+                }
+              },
+              required: ['query']
+            }
+          }
+        ]
+      : []
+  }
 
   return vapiRequest({
     apiKey,

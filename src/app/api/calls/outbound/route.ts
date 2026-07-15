@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { startVapiOutboundCall } from '@/lib/vapi'
 import { decrypt } from '@/lib/encryption'
+import { getAvailableMinutes } from '@/lib/billing'
 
 // POST /api/calls/outbound — Initiate a single outbound call
 export async function POST(request: NextRequest) {
@@ -11,6 +12,14 @@ export async function POST(request: NextRequest) {
 
   const { data: userData } = await supabase.from('users').select('agency_id').eq('id', user.id).single()
   if (!userData?.agency_id) return NextResponse.json({ error: 'No agency' }, { status: 403 })
+
+  // Check available minute balance
+  const availableMinutes = await getAvailableMinutes(userData.agency_id, supabase)
+  if (availableMinutes <= 0) {
+    return NextResponse.json({
+      error: 'Insufficient call balance. Please upgrade your plan or top up your minutes under the Billing section.'
+    }, { status: 402 })
+  }
 
   const body = await request.json()
   const { assistantId, phoneNumber, subClientId, customerName } = body

@@ -131,11 +131,11 @@ export default function SettingsPage() {
               <div className="space-y-2">
                 <Label htmlFor="brand_color">Brand Color (Hex)</Label>
                 <div className="flex gap-2">
-                  <Input 
+                  <input 
                     type="color" 
                     id="brand_color_picker" 
                     name="brand_color" 
-                    className="w-12 p-1 cursor-pointer h-10"
+                    className="w-12 h-10 rounded-lg border border-border bg-transparent p-0 cursor-pointer overflow-hidden [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none focus:outline-none focus:ring-2 focus:ring-ring"
                     value={formData.brand_color} onChange={handleChange} 
                   />
                   <Input 

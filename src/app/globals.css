@@ -1,31 +1,38 @@
 @import "tailwindcss";
 
 /* ================================
-   TAILWIND V4 THEME TOKENS
+   TAILWIND V4 THEME TOKENS - VoxAgent Modern SaaS
    ================================ */
 @theme {
-  --color-background: #0f1115; /* Modern Dark Mode Base */
-  --color-foreground: #f8fafc;
-  --color-card: rgba(255, 255, 255, 0.03);
-  --color-card-foreground: #f8fafc;
-  --color-popover: rgba(20, 22, 28, 0.8);
-  --color-popover-foreground: #f8fafc;
-  --color-primary: #6366F1;
-  --color-primary-foreground: #ffffff;
-  --color-secondary: rgba(255, 255, 255, 0.05);
-  --color-secondary-foreground: #f8fafc;
-  --color-muted: rgba(255, 255, 255, 0.1);
-  --color-muted-foreground: #94a3b8;
-  --color-accent: #059669;
-  --color-accent-foreground: #ffffff;
-  --color-destructive: #ef4444;
-  --color-destructive-foreground: #f8fafc;
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-input: rgba(255, 255, 255, 0.05);
-  --color-ring: #6366F1;
+  --color-background: #0F172A; /* Deep Space Slate for modern dark mode */
+  --color-foreground: #F8FAFC;
+  --color-card: rgba(30, 41, 59, 0.4);
+  --color-card-foreground: #F8FAFC;
+  --color-popover: rgba(15, 23, 42, 0.85);
+  --color-popover-foreground: #F8FAFC;
   
-  --font-sans: var(--font-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --radius: 0.75rem;
+  /* Primary: Electric Blue / Purple */
+  --color-primary: #7C3AED;
+  --color-primary-foreground: #FFFFFF;
+  
+  /* Secondary / Accent */
+  --color-secondary: #6366F1;
+  --color-secondary-foreground: #FFFFFF;
+  --color-accent: #EC4899; /* Generation Pink */
+  --color-accent-foreground: #FFFFFF;
+  
+  --color-muted: rgba(255, 255, 255, 0.05);
+  --color-muted-foreground: #94A3B8;
+  
+  --color-destructive: #DC2626;
+  --color-destructive-foreground: #FFFFFF;
+  
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-input: rgba(255, 255, 255, 0.05);
+  --color-ring: #7C3AED;
+  
+  --font-sans: "Plus Jakarta Sans", var(--font-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --radius: 1rem; /* Slightly rounder for boutique feel */
 }
 
 /* ================================
@@ -43,10 +50,11 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Animated subtle gradient background for SaaS feel */
+    
+    /* Modern Mesh Gradient Background */
     background-image: 
-      radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08), transparent 25%),
-      radial-gradient(circle at 85% 30%, rgba(5, 150, 105, 0.05), transparent 25%);
+      radial-gradient(circle at 15% 30%, rgba(124, 58, 237, 0.08), transparent 40%),
+      radial-gradient(circle at 85% 70%, rgba(236, 72, 153, 0.05), transparent 40%);
     background-attachment: fixed;
   }
 
@@ -57,63 +65,84 @@
 }
 
 /* ================================
-   COMPONENT STYLES (Glassmorphism)
+   COMPONENT STYLES (Glassmorphism & Bento)
    ================================ */
 @layer components {
+  /* Soft Glass Layer */
   .glass {
-    background: rgba(20, 22, 28, 0.4);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: rgba(30, 41, 59, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.2);
   }
 
+  /* Deep Glass Card for Bento Grid */
   .glass-card {
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease;
   }
   
   .glass-card:hover {
-    border-color: rgba(99, 102, 241, 0.3);
-    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.1);
+    border-color: rgba(124, 58, 237, 0.4);
+    box-shadow: 0 15px 40px -10px rgba(124, 58, 237, 0.15);
+    transform: translateY(-2px);
   }
 
+  /* Vibrant Text Gradients */
   .gradient-text {
-    background: linear-gradient(135deg, #818cf8, #c084fc);
+    background: linear-gradient(135deg, #A78BFA, #F472B6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   
   .gradient-text-accent {
-    background: linear-gradient(135deg, #34d399, #059669);
+    background: linear-gradient(135deg, #6366F1, #8B5CF6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
+  /* Interactive Buttons */
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-xl bg-[#6366F1] px-6 py-3 font-medium text-white transition-all hover:bg-[#4f46e5] hover:shadow-[0_0_20px_rgba(99,102,241,0.4)] focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:ring-offset-2 focus:ring-offset-gray-900;
+    @apply inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6366F1] px-6 py-3 font-semibold text-white transition-all focus:outline-none focus:ring-2 focus:ring-[#7C3AED] focus:ring-offset-2 focus:ring-offset-[#0F172A];
+    box-shadow: 0 4px 14px 0 rgba(124, 58, 237, 0.39);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+  }
+  .btn-primary:active {
+    transform: scale(0.96);
   }
   
   .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-xl px-6 py-3 font-medium text-white transition-all hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/20;
-    background: rgba(20, 22, 28, 0.4);
+    @apply inline-flex items-center justify-center rounded-xl px-6 py-3 font-semibold text-white transition-all focus:outline-none focus:ring-2 focus:ring-white/20;
+    background: rgba(30, 41, 59, 0.5);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
+  }
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  .btn-secondary:active {
+    transform: scale(0.96);
   }
 }
 
 /* ================================
-   ANIMATIONS
+   ANIMATIONS & GLOWS
    ================================ */
 @layer utilities {
-  .glow-primary { box-shadow: 0 0 40px rgba(99, 102, 241, 0.2); }
-  .glow-accent { box-shadow: 0 0 30px rgba(5, 150, 105, 0.2); }
+  .glow-primary { box-shadow: 0 0 40px rgba(124, 58, 237, 0.25); }
+  .glow-accent { box-shadow: 0 0 40px rgba(236, 72, 153, 0.25); }
 }

@@ -15,6 +15,7 @@ import {
   Zap,
   LogOut,
   Radio,
+  Database,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
@@ -28,6 +29,7 @@ const navItems = [
   { label: 'Call History', href: '/dashboard/calls', icon: Phone },
   { label: 'Clients', href: '/dashboard/clients', icon: Users },
   { label: 'Campaigns', href: '/dashboard/campaigns', icon: Megaphone },
+  { label: 'Knowledge Base', href: '/dashboard/knowledge', icon: Database },
   { label: 'Analytics', href: '/dashboard/analytics', icon: BarChart2 },
 ]
 

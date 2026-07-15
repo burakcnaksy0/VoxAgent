@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
@@ -10,11 +10,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select } from '@/components/ui/select'
-import { ArrowLeft, Bot, Sparkles, Save, Cpu } from 'lucide-react'
+import { ArrowLeft, Bot, Sparkles, Save, Cpu, RefreshCw } from 'lucide-react'
 
 export default function NewAssistantPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
+  const [knowledgeBases, setKnowledgeBases] = useState<any[]>([])
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -23,7 +25,27 @@ export default function NewAssistantPage() {
     voice_id: 'nova',
     language: 'en',
     sector: '',
+    knowledge_base_id: '',
   })
+
+  const fetchKnowledgeBases = async () => {
+    setRefreshing(true)
+    try {
+      const res = await fetch('/api/knowledge')
+      if (res.ok) {
+        const data = await res.json()
+        setKnowledgeBases(data || [])
+      }
+    } catch (err) {
+      console.error('Failed to fetch knowledge bases:', err)
+    } finally {
+      setTimeout(() => setRefreshing(false), 500)
+    }
+  }
+
+  useEffect(() => {
+    fetchKnowledgeBases()
+  }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -247,6 +269,53 @@ export default function NewAssistantPage() {
                     <option value="fable">Fable (British Male)</option>
                     <option value="onyx">Onyx (Deep Male)</option>
                   </Select>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="glass-card">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center justify-between">
+                  <span>Knowledge Base (RAG)</span>
+                  <button 
+                    type="button"
+                    onClick={fetchKnowledgeBases}
+                    disabled={refreshing}
+                    className="text-xs text-primary hover:text-primary/80 transition-colors font-medium flex items-center gap-1.5 disabled:opacity-50"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
+                    Refresh List
+                  </button>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="knowledge_base_id">Connect Knowledge Base</Label>
+                  <Select 
+                    id="knowledge_base_id" 
+                    name="knowledge_base_id" 
+                    value={formData.knowledge_base_id} 
+                    onChange={handleChange}
+                  >
+                    <option value="">None (No RAG)</option>
+                    {knowledgeBases.map((kb) => (
+                      <option key={kb.id} value={kb.id}>
+                        {kb.name}
+                      </option>
+                    ))}
+                  </Select>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Connect a document corpus so the AI agent can query it during phone calls.
+                  </p>
+                  <div className="pt-1">
+                    <Link 
+                      href="/dashboard/knowledge" 
+                      target="_blank"
+                      className="text-xs text-primary hover:underline font-semibold"
+                    >
+                      + Create New Knowledge Base ↗
+                    </Link>
+                  </div>
                 </div>
               </CardContent>
             </Card>

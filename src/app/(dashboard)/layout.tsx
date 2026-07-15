@@ -20,6 +20,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <div className="min-h-screen bg-background">
+      {agency?.brand_color && (
+        <style dangerouslySetInnerHTML={{ __html: `
+          :root {
+            --color-primary: ${agency.brand_color} !important;
+            --color-ring: ${agency.brand_color} !important;
+          }
+        `}} />
+      )}
       <Sidebar agency={agency as Agency | null} />
       <main className="pl-64">
         <div className="min-h-screen p-8">

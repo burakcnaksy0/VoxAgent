@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select } from '@/components/ui/select'
-import { Sparkles, Save } from 'lucide-react'
+import { Sparkles, Save, RefreshCw } from 'lucide-react'
 
 interface EditAssistantModalProps {
   isOpen: boolean
@@ -20,6 +20,8 @@ interface EditAssistantModalProps {
 export function EditAssistantModal({ isOpen, onClose, assistant }: EditAssistantModalProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
+  const [knowledgeBases, setKnowledgeBases] = useState<any[]>([])
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -28,6 +30,7 @@ export function EditAssistantModal({ isOpen, onClose, assistant }: EditAssistant
     voice_id: 'nova',
     language: 'en',
     sector: '',
+    knowledge_base_id: '',
   })
 
   useEffect(() => {
@@ -40,9 +43,31 @@ export function EditAssistantModal({ isOpen, onClose, assistant }: EditAssistant
         voice_id: assistant.voice_id || 'nova',
         language: assistant.language || 'en',
         sector: assistant.sector || '',
+        knowledge_base_id: assistant.knowledge_base_id || '',
       })
     }
   }, [assistant, isOpen])
+
+  const fetchKnowledgeBases = async () => {
+    setRefreshing(true)
+    try {
+      const res = await fetch('/api/knowledge')
+      if (res.ok) {
+        const data = await res.json()
+        setKnowledgeBases(data || [])
+      }
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setTimeout(() => setRefreshing(false), 500)
+    }
+  }
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchKnowledgeBases()
+    }
+  }, [isOpen])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -161,6 +186,44 @@ export function EditAssistantModal({ isOpen, onClose, assistant }: EditAssistant
               id="edit-description" name="description" 
               value={formData.description} onChange={handleChange} 
             />
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <Label htmlFor="edit-knowledge_base_id">Connect Knowledge Base (RAG)</Label>
+                  <button
+                    type="button"
+                    onClick={fetchKnowledgeBases}
+                    disabled={refreshing}
+                    className="text-xs text-primary hover:text-primary/80 transition-colors font-medium flex items-center gap-1.5 disabled:opacity-50"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
+                    Refresh List
+                  </button>
+            </div>
+            <Select 
+              id="edit-knowledge_base_id" 
+              name="knowledge_base_id" 
+              value={formData.knowledge_base_id} 
+              onChange={handleChange}
+            >
+              <option value="">None (No RAG)</option>
+              {knowledgeBases.map((kb) => (
+                <option key={kb.id} value={kb.id}>
+                  {kb.name}
+                </option>
+              ))}
+            </Select>
+            <div className="flex justify-between items-center text-xs pt-1">
+              <span className="text-muted-foreground">Select a database to search during calls.</span>
+              <a 
+                href="/dashboard/knowledge" 
+                target="_blank" 
+                className="text-primary hover:underline font-semibold"
+              >
+                + Create New ↗
+              </a>
+            </div>
           </div>
 
           <div className="bg-accent/30 rounded-lg p-3 border border-border">

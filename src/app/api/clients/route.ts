@@ -11,6 +11,41 @@ export async function POST(req: Request) {
     const { data: userData } = await supabase.from('users').select('agency_id').eq('id', user.id).single()
     if (!userData?.agency_id) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
+    // Fetch agency plan
+    const { data: agency } = await supabase
+      .from('agencies')
+      .select('plan')
+      .eq('id', userData.agency_id)
+      .single()
+
+    const agencyPlan = agency?.plan || 'trial'
+
+    // Enforce client limits based on plan
+    if (agencyPlan !== 'pro') {
+      const { count, error: countError } = await supabase
+        .from('sub_clients')
+        .select('*', { count: 'exact', head: true })
+        .eq('agency_id', userData.agency_id)
+
+      if (countError) {
+        return NextResponse.json({ error: 'Failed to verify client limits' }, { status: 500 })
+      }
+
+      const currentCount = count || 0
+      let maxAllowed = 2
+      if (agencyPlan === 'starter') {
+        maxAllowed = 3
+      } else if (agencyPlan === 'growth') {
+        maxAllowed = 15
+      }
+
+      if (currentCount >= maxAllowed) {
+        return NextResponse.json({
+          error: `Client limit reached. Your '${agencyPlan}' plan allows up to ${maxAllowed} client(s). Please upgrade your plan in the Billing & Usage section.`
+        }, { status: 403 })
+      }
+    }
+
     const body = await req.json()
     const { name, phone, email, fallback_channel } = body
 

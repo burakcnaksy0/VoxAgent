@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Book, Plus, FileText } from 'lucide-react'
+import { Book, Plus, FileText, Trash2 } from 'lucide-react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Knowledge Base | VoxAgent' }
@@ -43,6 +43,20 @@ export default async function KnowledgeBasesPage() {
       })
       revalidatePath('/dashboard/knowledge')
     }
+  }
+
+  async function deleteKnowledgeBase(formData: FormData) {
+    'use server'
+    const id = formData.get('id') as string
+    if (!id) return
+
+    const supabaseServer = await createClient()
+    // Delete chunks first (foreign key constraints)
+    await supabaseServer.from('knowledge_chunks').delete().eq('knowledge_base_id', id)
+    // Delete knowledge base
+    await supabaseServer.from('knowledge_bases').delete().eq('id', id)
+
+    revalidatePath('/dashboard/knowledge')
   }
 
   return (
@@ -102,7 +116,19 @@ export default async function KnowledgeBasesPage() {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center justify-between">
                       <span className="truncate pr-2">{kb.name}</span>
-                      <Book className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <div className="flex items-center gap-1.5">
+                        <form action={deleteKnowledgeBase} className="inline">
+                          <input type="hidden" name="id" value={kb.id} />
+                          <button 
+                            type="submit"
+                            className="text-muted-foreground hover:text-destructive transition-colors p-1.5 rounded hover:bg-destructive/10"
+                            title="Delete Knowledge Base"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </form>
+                        <Book className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                      </div>
                     </CardTitle>
                     <CardDescription className="line-clamp-2 min-h-[40px]">
                       {kb.description || 'No description provided.'}

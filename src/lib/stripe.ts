@@ -1,92 +1,43 @@
 import Stripe from 'stripe'
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-06-24.dahlia',
+// Initialize Stripe. If the secret key is missing, we use a placeholder to avoid breaking builds.
+const stripeSecret = process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder_key_please_update_in_env_file'
+
+export const stripe = new Stripe(stripeSecret, {
+  apiVersion: '2023-10-16' as any, // standard API version
+  typescript: true,
 })
 
 /**
- * Create or retrieve a Stripe customer for an agency
+ * Gets or creates a Stripe Customer for an Agency
  */
-export async function getOrCreateStripeCustomer(agencyId: string, email: string, name: string): Promise<string> {
-  const existing = await stripe.customers.search({
-    query: `metadata['agency_id']:'${agencyId}'`,
-    limit: 1,
-  })
+export async function getOrCreateCustomer(agencyId: string, email: string, name: string, supabaseAdmin: any) {
+  // Try fetching existing customer from DB first
+  const { data: agency } = await supabaseAdmin
+    .from('agencies')
+    .select('stripe_customer_id')
+    .eq('id', agencyId)
+    .single()
 
-  if (existing.data.length > 0) {
-    return existing.data[0].id
+  if (agency?.stripe_customer_id) {
+    return agency.stripe_customer_id
   }
 
+  // If not exists, create customer in Stripe
+  console.log(`[STRIPE] Creating customer for agency ${agencyId} (${email})...`)
   const customer = await stripe.customers.create({
     email,
     name,
-    metadata: { agency_id: agencyId },
-  })
-
-  return customer.id
-}
-
-/**
- * Create a Stripe Checkout session for plan subscription
- */
-export async function createCheckoutSession({
-  customerId,
-  priceId,
-  agencyId,
-  successUrl,
-  cancelUrl,
-}: {
-  customerId: string
-  priceId: string
-  agencyId: string
-  successUrl: string
-  cancelUrl: string
-}) {
-  return stripe.checkout.sessions.create({
-    customer: customerId,
-    mode: 'subscription',
-    payment_method_types: ['card'],
-    line_items: [{ price: priceId, quantity: 1 }],
-    success_url: successUrl,
-    cancel_url: cancelUrl,
-    metadata: { agency_id: agencyId },
-    subscription_data: {
-      metadata: { agency_id: agencyId },
-      trial_period_days: 0,
+    metadata: {
+      agency_id: agencyId,
     },
   })
-}
 
-/**
- * Create a billing portal session for self-serve plan management
- */
-export async function createBillingPortalSession(customerId: string, returnUrl: string) {
-  return stripe.billingPortal.sessions.create({
-    customer: customerId,
-    return_url: returnUrl,
-  })
-}
+  // Update DB
+  await supabaseAdmin
+    .from('agencies')
+    .update({ stripe_customer_id: customer.id })
+    .eq('id', agencyId)
 
-/**
- * Get plan name from price ID
- */
-export function getPlanFromPriceId(priceId: string): string {
-  const priceMap: Record<string, string> = {
-    [process.env.STRIPE_STARTER_PRICE_ID || '']: 'starter',
-    [process.env.STRIPE_GROWTH_PRICE_ID || '']: 'growth',
-    [process.env.STRIPE_PRO_PRICE_ID || '']: 'pro',
-  }
-  return priceMap[priceId] || 'trial'
-}
-
-/**
- * Get price ID from plan name
- */
-export function getPriceIdFromPlan(plan: string): string | null {
-  const planMap: Record<string, string> = {
-    'starter': process.env.STRIPE_STARTER_PRICE_ID || 'price_dummy_starter',
-    'growth': process.env.STRIPE_GROWTH_PRICE_ID || 'price_dummy_growth',
-    'pro': process.env.STRIPE_PRO_PRICE_ID || 'price_dummy_pro',
-  }
-  return planMap[plan] || null
+  return customer.id
 }

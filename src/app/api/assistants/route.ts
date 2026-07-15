@@ -33,9 +33,35 @@ export async function POST(request: NextRequest) {
 
   const { data: agency } = await supabase
     .from('agencies')
-    .select('vapi_api_key_encrypted')
+    .select('vapi_api_key_encrypted, plan')
     .eq('id', userData.agency_id)
     .single()
+
+  const agencyPlan = agency?.plan || 'trial'
+
+  // Enforce assistant count limits based on plan
+  if (agencyPlan !== 'pro') {
+    const { count, error: countError } = await supabase
+      .from('assistants')
+      .select('*', { count: 'exact', head: true })
+      .eq('agency_id', userData.agency_id)
+
+    if (countError) {
+      return NextResponse.json({ error: 'Failed to verify assistant limits' }, { status: 500 })
+    }
+
+    const currentCount = count || 0
+    let maxAllowed = 1
+    if (agencyPlan === 'growth') {
+      maxAllowed = 5
+    }
+
+    if (currentCount >= maxAllowed) {
+      return NextResponse.json({
+        error: `Assistant limit reached. Your '${agencyPlan}' plan allows up to ${maxAllowed} assistant(s). Please upgrade your plan in the Billing & Usage section.`
+      }, { status: 403 })
+    }
+  }
 
   let vapiKey = process.env.VAPI_PRIVATE_KEY;
   if (agency?.vapi_api_key_encrypted) {
@@ -70,6 +96,7 @@ export async function POST(request: NextRequest) {
       voiceId: voice_id,
       language,
       serverUrl: `${process.env.APP_URL}/api/webhooks/vapi/${userData.agency_id}`,
+      hasKnowledgeBase: !!knowledge_base_id,
     })
     vapiAssistantId = vapiResult.id
   } catch (err: any) {

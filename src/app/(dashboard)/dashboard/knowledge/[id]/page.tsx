@@ -4,9 +4,10 @@ import { useState, useEffect, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
+import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Upload, FileText, Loader2, HardDrive } from 'lucide-react'
+import { ArrowLeft, Upload, FileText, Loader2, HardDrive, Trash2 } from 'lucide-react'
 
 export default function KnowledgeBaseDetailsPage() {
   const params = useParams()
@@ -18,22 +19,36 @@ export default function KnowledgeBaseDetailsPage() {
   const [uploading, setUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    // In a real app we'd fetch this from a server action or API route.
-    // We'll simulate the data fetching for now, but ideally we use Supabase client here.
-    async function fetchKB() {
-      try {
-        // Fetch logic would go here. Since we are using App Router, 
-        // it's often better to make this page a Server Component, but we need client interactivity for uploads.
-        // For MVP, we'll just mock or leave it empty, assuming we can upload blindly to the ID.
-        setKb({ id, name: 'Knowledge Base Data' })
-      } catch (err) {
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
+  const fetchKBAndChunks = async () => {
+    const supabase = createClient()
+    try {
+      const { data: kbData, error: kbErr } = await supabase
+        .from('knowledge_bases')
+        .select('*')
+        .eq('id', id)
+        .single()
+
+      if (kbErr) throw kbErr
+      setKb(kbData)
+
+      const { data: chunksData, error: chunksErr } = await supabase
+        .from('knowledge_chunks')
+        .select('*')
+        .eq('knowledge_base_id', id)
+        .order('created_at', { ascending: false })
+
+      if (chunksErr) throw chunksErr
+      setChunks(chunksData || [])
+    } catch (err: any) {
+      console.error(err)
+      toast.error('Failed to load knowledge base: ' + err.message)
+    } finally {
+      setLoading(false)
     }
-    fetchKB()
+  }
+
+  useEffect(() => {
+    fetchKBAndChunks()
   }, [id])
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,8 +81,8 @@ export default function KnowledgeBaseDetailsPage() {
 
       toast.success(`Successfully uploaded! ${data.message}`)
       
-      // Optionally fetch chunks again to update the UI
-      router.refresh()
+      // Refresh chunks list immediately
+      await fetchKBAndChunks()
     } catch (err: any) {
       toast.error(err.message)
     } finally {
@@ -75,6 +90,25 @@ export default function KnowledgeBaseDetailsPage() {
       if (fileInputRef.current) {
         fileInputRef.current.value = ''
       }
+    }
+  }
+
+  const handleDeleteChunk = async (chunkId: string) => {
+    if (!confirm('Are you sure you want to delete this chunk?')) return
+    const supabase = createClient()
+    try {
+      const { error } = await supabase
+        .from('knowledge_chunks')
+        .delete()
+        .eq('id', chunkId)
+
+      if (error) throw error
+
+      toast.success('Chunk deleted successfully')
+      setChunks(prev => prev.filter(c => c.id !== chunkId))
+    } catch (err: any) {
+      console.error(err)
+      toast.error('Failed to delete chunk: ' + err.message)
     }
   }
 
@@ -91,7 +125,7 @@ export default function KnowledgeBaseDetailsPage() {
         </Link>
         <div>
           <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
-            Manage Documents
+            {kb?.name || 'Manage Documents'}
           </h1>
           <p className="text-muted-foreground mt-1">Upload files to populate the knowledge base.</p>
         </div>
@@ -146,7 +180,7 @@ export default function KnowledgeBaseDetailsPage() {
         <div className="lg:col-span-2">
           <Card className="glass-card h-full min-h-[300px]">
             <CardHeader>
-              <CardTitle>Stored Knowledge Chunks</CardTitle>
+              <CardTitle>Stored Knowledge Chunks ({chunks.length})</CardTitle>
               <CardDescription>
                 These chunks are generated from your uploaded files and are searchable by your AI agents.
               </CardDescription>
@@ -159,8 +193,25 @@ export default function KnowledgeBaseDetailsPage() {
                   <p className="text-sm text-muted-foreground/70 mt-1">Upload a file to start generating data.</p>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {/* Ideally, we'd map through chunks here */}
+                <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                  {chunks.map((chunk: any, index: number) => (
+                    <div key={chunk.id} className="p-4 rounded-lg bg-accent/20 border border-border/50 text-sm space-y-2">
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <span className="font-semibold">Chunk #{chunks.length - index}</span>
+                        <div className="flex items-center gap-2">
+                          <span>{chunk.metadata?.source_filename || 'Unknown source'}</span>
+                          <button
+                            onClick={() => handleDeleteChunk(chunk.id)}
+                            className="text-muted-foreground hover:text-destructive transition-colors p-1 rounded hover:bg-destructive/10"
+                            title="Delete Chunk"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                      <p className="text-foreground leading-relaxed text-xs whitespace-pre-wrap">{chunk.content}</p>
+                    </div>
+                  ))}
                 </div>
               )}
             </CardContent>

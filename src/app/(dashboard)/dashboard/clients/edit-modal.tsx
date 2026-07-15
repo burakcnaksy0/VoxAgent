@@ -97,8 +97,8 @@ export function EditClientModal({ isOpen, onClose, client, onSuccess }: EditClie
             onChange={(e) => setFormData({...formData, fallback_channel: e.target.value})}
           >
             <option value="none">None (No automatic messages)</option>
-            <option value="sms">SMS</option>
-            <option value="whatsapp">WhatsApp</option>
+            <option value="sms">SMS (All Plans)</option>
+            <option value="whatsapp">WhatsApp (Growth & Pro Only)</option>
           </Select>
         </div>
         <div className="flex justify-end gap-3 pt-4 border-t border-border/50">

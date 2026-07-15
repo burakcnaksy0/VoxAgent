@@ -10,11 +10,14 @@ import { Select } from '@/components/ui/select'
 import { Users, Plus, Phone, MessageSquare, Mail } from 'lucide-react'
 import { ClientActionMenu } from './action-menu'
 import { toast } from 'sonner'
+import { createClient } from '@/lib/supabase/client'
 
 export default function ClientsPage() {
+  const supabase = createClient()
   const [clients, setClients] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [isAdding, setIsAdding] = useState(false)
+  const [plan, setPlan] = useState<string>('trial')
 
   const [formData, setFormData] = useState({
     name: '',
@@ -25,7 +28,23 @@ export default function ClientsPage() {
 
   useEffect(() => {
     fetchClients()
+    fetchPlan()
   }, [])
+
+  const fetchPlan = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      const { data: userData } = await supabase.from('users').select('agency_id').eq('id', user.id).single()
+      if (!userData?.agency_id) return
+      const { data: agency } = await supabase.from('agencies').select('plan').eq('id', userData.agency_id).single()
+      if (agency?.plan) {
+        setPlan(agency.plan)
+      }
+    } catch (err) {
+      console.error('Failed to fetch plan:', err)
+    }
+  }
 
   const fetchClients = async () => {
     try {
@@ -118,12 +137,20 @@ export default function ClientsPage() {
                   onChange={(e) => setFormData({...formData, fallback_channel: e.target.value})}
                 >
                   <option value="none">None (No automatic messages)</option>
-                  <option value="sms">SMS</option>
-                  <option value="whatsapp">WhatsApp</option>
+                  <option value="sms">SMS (All Plans)</option>
+                  <option value="whatsapp" disabled={plan === 'trial' || plan === 'starter'}>
+                    WhatsApp (Growth & Pro Only) { (plan === 'trial' || plan === 'starter') && '🔒' }
+                  </option>
                 </Select>
-                <p className="text-[10px] text-muted-foreground mt-1">
-                  AI will send a message via this channel if the call is unanswered.
-                </p>
+                { (plan === 'trial' || plan === 'starter') ? (
+                  <p className="text-[10px] text-amber-500 font-medium mt-1">
+                    🔒 Upgrade to Growth or Pro to unlock WhatsApp Fallback.
+                  </p>
+                ) : (
+                  <p className="text-[10px] text-muted-foreground mt-1">
+                    AI will send a message via this channel if the call is unanswered.
+                  </p>
+                )}
               </div>
               <Button type="submit" variant="gradient" className="w-full mt-2" loading={isAdding}>
                 Save Client

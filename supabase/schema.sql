@@ -21,6 +21,7 @@ CREATE TABLE agencies (
   plan_status TEXT DEFAULT 'active' CHECK (plan_status IN ('active', 'cancelled', 'past_due', 'trialing')),
   trial_ends_at TIMESTAMPTZ DEFAULT NOW() + INTERVAL '14 days',
   vapi_api_key_encrypted TEXT,
+  additional_minutes DECIMAL(10, 2) DEFAULT 0.00,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -163,7 +164,7 @@ CREATE TABLE campaign_leads (
   phone TEXT NOT NULL,
   name TEXT,
   custom_data JSONB DEFAULT '{}',
-  call_status TEXT DEFAULT 'pending' CHECK (call_status IN ('pending', 'calling', 'completed', 'failed', 'no-answer', 'fallback-sent')),
+  call_status TEXT DEFAULT 'pending' CHECK (call_status IN ('pending', 'calling', 'in-progress', 'completed', 'failed', 'no-answer', 'fallback-sent')),
   call_id UUID REFERENCES calls(id) ON DELETE SET NULL,
   attempted_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW()
@@ -322,3 +323,65 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION handle_new_user();
+
+-- ==========================================
+-- ATOMIC BILLING AND BALANCE FUNCTIONS
+-- ==========================================
+
+-- Atomically increment agency additional top-up minutes
+CREATE OR REPLACE FUNCTION increment_agency_additional_minutes(
+  target_agency_id UUID,
+  minutes_to_add NUMERIC
+) RETURNS VOID AS $$
+BEGIN
+  UPDATE agencies
+  SET additional_minutes = COALESCE(additional_minutes, 0.00) + minutes_to_add
+  WHERE id = target_agency_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Atomically deduct call minutes from allowance and top-up balance
+CREATE OR REPLACE FUNCTION deduct_agency_minutes(
+  target_agency_id UUID,
+  minutes_to_add NUMERIC,
+  current_period TEXT,
+  default_limit NUMERIC
+) RETURNS VOID AS $$
+DECLARE
+  current_used NUMERIC;
+  current_limit NUMERIC;
+  target_used NUMERIC;
+  prev_max NUMERIC;
+  overage_to_deduct NUMERIC;
+BEGIN
+  -- Ensure billing_usage row exists for the period
+  INSERT INTO billing_usage (agency_id, period, minutes_used, minutes_limit)
+  VALUES (target_agency_id, current_period, 0, default_limit)
+  ON CONFLICT (agency_id, period) DO NOTHING;
+
+  -- Lock row for update to ensure concurrency safety
+  SELECT minutes_used, minutes_limit
+  INTO current_used, current_limit
+  FROM billing_usage
+  WHERE agency_id = target_agency_id AND period = current_period
+  FOR UPDATE;
+
+  target_used := COALESCE(current_used, 0.00) + minutes_to_add;
+
+  -- Update monthly usage record
+  UPDATE billing_usage
+  SET minutes_used = target_used
+  WHERE agency_id = target_agency_id AND period = current_period;
+
+  -- Calculate overage to deduct from additional top-up balance
+  prev_max := GREATEST(COALESCE(current_used, 0.00), COALESCE(current_limit, default_limit));
+  overage_to_deduct := target_used - prev_max;
+
+  IF overage_to_deduct > 0 THEN
+    UPDATE agencies
+    SET additional_minutes = GREATEST(0.00, COALESCE(additional_minutes, 0.00) - overage_to_deduct)
+    WHERE id = target_agency_id;
+  END IF;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+

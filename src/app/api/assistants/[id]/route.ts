@@ -77,7 +77,7 @@ export async function PATCH(
     if (!userData?.agency_id) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
     const body = await request.json()
-    const { name, description, system_prompt, first_message, end_call_message, voice_id, language } = body
+    const { name, description, system_prompt, first_message, end_call_message, voice_id, language, knowledge_base_id } = body
 
     // Verify assistant belongs to agency
     const { data: assistant } = await supabase
@@ -110,6 +110,8 @@ export async function PATCH(
             firstMessage: first_message,
             endCallMessage: end_call_message,
             voiceId: voice_id,
+            serverUrl: `${process.env.APP_URL}/api/webhooks/vapi/${userData.agency_id}`,
+            hasKnowledgeBase: !!knowledge_base_id,
           })
         }
       } catch (err) {
@@ -128,7 +130,8 @@ export async function PATCH(
         first_message,
         end_call_message,
         voice_id,
-        language
+        language,
+        knowledge_base_id
       })
       .eq('id', id)
 
