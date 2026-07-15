@@ -1,31 +1,14 @@
 'use client'
 
-import { motion, Variants } from 'framer-motion'
+import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { ArrowRight, Bot, PhoneCall, Zap } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Bot, PhoneCall, Zap } from 'lucide-react'
+import { HeroGeometric } from '@/components/ui/shape-landing-hero'
+import { CardSpotlight } from '@/components/ui/card-spotlight'
 
 export default function HomePage() {
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  }
-
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: 'easeOut',
-      },
-    },
-  }
+  const router = useRouter()
 
   return (
     <div className="min-h-screen overflow-hidden selection:bg-[#6366F1]/30">
@@ -50,45 +33,30 @@ export default function HomePage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 px-6">
-        <div className="mx-auto max-w-7xl relative z-10 text-center">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-            className="max-w-3xl mx-auto flex flex-col items-center"
-          >
-            <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass border-white/10 mb-8">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-sm font-medium text-white/80">VoxAgent v2.0 is now live</span>
-            </motion.div>
-            
-            <motion.h1 variants={itemVariants} className="text-5xl lg:text-7xl font-bold tracking-tight mb-8">
-              Launch Your <span className="gradient-text">AI Voice</span> Agency
-            </motion.h1>
-            
-            <motion.p variants={itemVariants} className="text-lg lg:text-xl text-[#94a3b8] mb-12 max-w-2xl">
-              White-label AI voice agents that automate calls, book appointments, and scale your business globally. Seamlessly integrate with your existing workflow.
-            </motion.p>
-            
-            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
-              <Link href="/login" className="btn-primary w-full sm:w-auto text-lg group">
-                Start Free Trial
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link href="#features" className="btn-secondary w-full sm:w-auto text-lg">
-                View Features
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-        
-        {/* Background Decorative Elements */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#6366F1]/20 rounded-full blur-[120px] -z-10" />
-      </section>
+      <HeroGeometric
+        badge="VoxAgent v2.0 is now live"
+        title1="Launch Your"
+        title2="AI Voice Agency"
+        subtitle="White-label AI voice agents that automate calls, book appointments, and scale your business globally. Seamlessly integrate with your existing workflow."
+        buttons={{
+          primary: {
+            text: 'Start Free Trial',
+            onClick: () => router.push('/login')
+          },
+          secondary: {
+            text: 'View Features',
+            onClick: () => {
+              const el = document.getElementById('features')
+              if (el) {
+                el.scrollIntoView({ behavior: 'smooth' })
+              }
+            }
+          }
+        }}
+      />
 
       {/* Features Section - Scroll Triggered */}
-      <section id="features" className="py-24 relative px-6">
+      <section id="features" className="py-24 relative px-6 bg-slate-950/80">
         <div className="mx-auto max-w-7xl">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -106,17 +74,20 @@ export default function HomePage() {
               {
                 icon: <PhoneCall className="w-6 h-6 text-[#6366F1]" />,
                 title: 'Human-like Voice AI',
-                desc: 'Our models are trained to pause, breathe, and react naturally in real-time conversations.'
+                desc: 'Our models are trained to pause, breathe, and react naturally in real-time conversations.',
+                spotlight: 'rgba(99, 102, 241, 0.15)'
               },
               {
                 icon: <Zap className="w-6 h-6 text-[#059669]" />,
                 title: 'Instant Integrations',
-                desc: 'Connect with your CRM, calendar, and payment systems in just a few clicks.'
+                desc: 'Connect with your CRM, calendar, and payment systems in just a few clicks.',
+                spotlight: 'rgba(5, 150, 105, 0.15)'
               },
               {
                 icon: <Bot className="w-6 h-6 text-[#c084fc]" />,
                 title: 'White-Label Dashboard',
-                desc: 'Provide your clients with their own branded dashboard to track call analytics and ROI.'
+                desc: 'Provide your clients with their own branded dashboard to track call analytics and ROI.',
+                spotlight: 'rgba(192, 132, 252, 0.15)'
               }
             ].map((feature, idx) => (
               <motion.div
@@ -125,13 +96,18 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5, delay: idx * 0.2 }}
-                className="glass-card rounded-2xl p-8"
+                className="h-full"
               >
-                <div className="w-12 h-12 rounded-xl glass flex items-center justify-center mb-6">
-                  {feature.icon}
-                </div>
-                <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
-                <p className="text-[#94a3b8] leading-relaxed">{feature.desc}</p>
+                <CardSpotlight 
+                  spotlightColor={feature.spotlight}
+                  className="h-full border border-white/5 bg-slate-900/20 p-8"
+                >
+                  <div className="w-12 h-12 rounded-xl glass flex items-center justify-center mb-6">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
+                  <p className="text-[#94a3b8] leading-relaxed">{feature.desc}</p>
+                </CardSpotlight>
               </motion.div>
             ))}
           </div>
@@ -139,7 +115,7 @@ export default function HomePage() {
       </section>
       
       {/* Footer CTA */}
-      <section className="py-24 px-6">
+      <section className="py-24 px-6 bg-slate-950">
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}

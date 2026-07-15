@@ -14,6 +14,32 @@ Built for scale and agency profitability, VoxAgent is designed for technical fou
 
 ---
 
+## Dashboard Showcase
+
+Here is a preview of the VoxAgent white-label dashboard interface:
+
+### 1. AI Voice Assistant Setup
+Configure custom AI behavior, select professional voices, and synchronize seamlessly with Vapi.
+![AI Assistant Setup](public/screenshots/create-assistant.png)
+
+### 2. Bulk Outbound Campaigns
+Launch parallel calling campaigns by importing contacts via CSV with custom variables.
+![Outbound Campaigns](public/screenshots/new-campaign.png)
+
+### 3. Clients & Contacts Directory
+Manage your contacts and configure automatic SMS/WhatsApp fallback channels for unanswered calls.
+![Clients Directory](public/screenshots/clients-directory.png)
+
+### 4. Subscription & Minute Top-ups
+Upgrade subscription plans and purchase minute packages that never expire.
+![Subscription & Billing](public/screenshots/billing-pricing.png)
+
+### 5. Agency Settings & White-labeling
+Customize the agency name, branding color, upload your logo, and configure custom domain routing and API keys.
+![Agency Settings](public/screenshots/agency-settings.png)
+
+---
+
 ## The Problem
 
 - **Missed Opportunities:** Small to medium businesses miss up to 30% of inbound calls, leading to lost revenue and poor customer experience.

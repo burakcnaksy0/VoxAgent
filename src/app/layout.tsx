@@ -1,7 +1,10 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { Toaster } from 'sonner'
-import { Plus_Jakarta_Sans } from 'next/font/google'
+import { Plus_Jakarta_Sans, Geist } from 'next/font/google'
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -27,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={jakarta.variable}>
+    <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <body className="font-sans">
         {children}
         <Toaster
