@@ -37,7 +37,12 @@ export async function POST(request: NextRequest) {
     .eq('id', userData.agency_id)
     .single()
 
-  if (!agency?.vapi_api_key_encrypted) {
+  let vapiKey = process.env.VAPI_PRIVATE_KEY;
+  if (agency?.vapi_api_key_encrypted) {
+    vapiKey = decrypt(agency.vapi_api_key_encrypted);
+  }
+
+  if (!vapiKey) {
     return NextResponse.json({ error: 'VAPI API key not configured. Please add it in Settings.' }, { status: 422 })
   }
 
@@ -57,7 +62,6 @@ export async function POST(request: NextRequest) {
   let vapiAssistantId: string | null = null
 
   try {
-    const vapiKey = decrypt(agency.vapi_api_key_encrypted)
     const vapiResult: any = await createVapiAssistant(vapiKey, {
       name,
       systemPrompt: system_prompt,

@@ -1,0 +1,36 @@
+version: "2"
+type: backend
+tech_stack:
+  - typescript
+  - nextjs
+  - supabase
+  - react
+features:
+  - name: Real-time Transcript Logging
+    description: Logs real-time transcripts from VAPI webhooks into the call_events database table.
+    files:
+      - src/app/api/webhooks/vapi/[agencyId]/route.ts
+    endpoints:
+      - method: POST
+        path: /api/webhooks/vapi/[agencyId]
+        description: Receives events from VAPI for a specific agency and logs transcripts
+        auth_required: false
+        request_schema:
+          body:
+            message:
+              type: transcript
+              call:
+                id: string
+              event: any
+        response_schema:
+          "200": "{ ok: true }"
+          "500": "{ error: 'Internal error' }"
+    depends_on:
+      - Supabase Database
+  - name: Live Calls Dashboard Navigation
+    description: Navigation link in the sidebar to the Live Calls dashboard with a LIVE badge.
+    files:
+      - src/components/dashboard/sidebar.tsx
+    endpoints: []
+    depends_on: []
+known_limitations: []

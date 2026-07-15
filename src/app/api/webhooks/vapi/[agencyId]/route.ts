@@ -176,7 +176,21 @@ export async function POST(
       }
 
       case 'transcript': {
-        // Real-time transcript — just log (Ably push will be added later)
+        // Log real-time transcript
+        const { data: callRecord } = await supabase
+          .from('calls')
+          .select('id')
+          .eq('vapi_call_id', vapiCall.id)
+          .single()
+
+        if (callRecord) {
+          await supabase.from('call_events').insert({
+            call_id: callRecord.id,
+            agency_id: agencyId,
+            event_type: 'transcript',
+            payload: event,
+          })
+        }
         break
       }
 

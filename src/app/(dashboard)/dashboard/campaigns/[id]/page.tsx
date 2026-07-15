@@ -10,7 +10,9 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Campaign Details | VoxAgent' }
 
-export default async function CampaignDetailsPage({ params }: { params: { id: string } }) {
+export default async function CampaignDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
@@ -21,7 +23,7 @@ export default async function CampaignDetailsPage({ params }: { params: { id: st
   const { data: campaign } = await supabase
     .from('campaigns')
     .select('*, assistants(name)')
-    .eq('id', params.id)
+    .eq('id', id)
     .eq('agency_id', userData.agency_id)
     .single()
 

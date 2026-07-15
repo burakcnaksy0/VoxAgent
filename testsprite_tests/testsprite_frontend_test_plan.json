@@ -1,0 +1,213 @@
+[
+  {
+    "id": "TC001",
+    "title": "Store a valid transcript event for one agency",
+    "description": "This verifies that a valid transcript webhook for an agency is accepted and stored for later reporting.",
+    "category": "Real-time Transcript Logging",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/webhooks/vapi/agency-alpha"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid transcript event payload into the request body"
+      },
+      {
+        "type": "action",
+        "description": "Submit the webhook request"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a successful response is returned"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the transcript event is persisted for the agency"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC002",
+    "title": "Keep transcript events isolated between agencies",
+    "description": "This verifies that webhook events sent for different agency IDs are stored under the correct agency workspace without mixing data.",
+    "category": "Real-time Transcript Logging",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/webhooks/vapi/agency-alpha"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid transcript event payload for one call into the request body"
+      },
+      {
+        "type": "action",
+        "description": "Submit the webhook request"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /api/webhooks/vapi/agency-beta"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid transcript event payload for a different call into the request body"
+      },
+      {
+        "type": "action",
+        "description": "Submit the webhook request"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify both requests are accepted successfully"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify each transcript is stored only for its matching agency"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC003",
+    "title": "Open the Live Calls dashboard from the sidebar",
+    "description": "This verifies that an operator can use the sidebar to reach the Live Calls dashboard for active call monitoring.",
+    "category": "Live Calls Dashboard Navigation",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the dashboard view"
+      },
+      {
+        "type": "action",
+        "description": "Open the dashboard sidebar"
+      },
+      {
+        "type": "action",
+        "description": "Click the Live Calls navigation entry"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user reaches the Live Calls dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the LIVE badge is visible on the destination page"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Show Live Calls entry in the sidebar",
+    "description": "This verifies that an operator can see the Live Calls navigation item and the LIVE badge in the dashboard sidebar.",
+    "category": "Live Calls Dashboard Navigation",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the dashboard view"
+      },
+      {
+        "type": "action",
+        "description": "Open the dashboard sidebar"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the Live Calls navigation entry is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the LIVE badge is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "Reject a malformed transcript payload without storing data",
+    "description": "This verifies that an invalid transcript webhook is rejected and no transcript is stored.",
+    "category": "Real-time Transcript Logging",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/webhooks/vapi/agency-alpha"
+      },
+      {
+        "type": "action",
+        "description": "Fill a malformed webhook payload into the request body"
+      },
+      {
+        "type": "action",
+        "description": "Submit the webhook request"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an internal error response is returned"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no transcript event is persisted"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC006",
+    "title": "Reject a non-transcript event without storing data",
+    "description": "This verifies that webhook events that are not transcript messages are not accepted for persistence.",
+    "category": "Real-time Transcript Logging",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/webhooks/vapi/agency-alpha"
+      },
+      {
+        "type": "action",
+        "description": "Fill a webhook payload with a non-transcript message type into the request body"
+      },
+      {
+        "type": "action",
+        "description": "Submit the webhook request"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an internal error response is returned"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no transcript event is persisted"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC007",
+    "title": "Stay on the current view when Live Calls is unavailable",
+    "description": "This verifies that when the Live Calls navigation item is unavailable, the user does not navigate away from the current dashboard view.",
+    "category": "Live Calls Dashboard Navigation",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the dashboard view"
+      },
+      {
+        "type": "action",
+        "description": "Open the dashboard sidebar"
+      },
+      {
+        "type": "action",
+        "description": "Wait for the Live Calls navigation item to be unavailable"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the Live Calls destination is not reached"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the current dashboard view remains visible"
+      }
+    ],
+    "priority": "Low"
+  }
+]

@@ -4,7 +4,8 @@ import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Bot, Plus, MoreVertical, Mic, Globe, Cpu } from 'lucide-react'
+import { Bot, Plus, Mic, Globe, Cpu } from 'lucide-react'
+import { AssistantActionMenu } from './action-menu'
 import type { Metadata } from 'next'
 export const metadata: Metadata = { title: 'AI Assistants | VoxAgent' }
 
@@ -77,9 +78,7 @@ export default async function AssistantsPage() {
                       </p>
                     </div>
                   </div>
-                  <button className="text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                    <MoreVertical className="w-5 h-5" />
-                  </button>
+                  <AssistantActionMenu assistant={assistant} />
                 </CardHeader>
                 
                 <CardContent>

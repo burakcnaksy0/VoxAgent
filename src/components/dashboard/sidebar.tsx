@@ -24,7 +24,7 @@ import { Agency } from '@/types'
 const navItems = [
   { label: 'Overview', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Assistants', href: '/dashboard/assistants', icon: Bot },
-  { label: 'Live Calls', href: '/dashboard/live', icon: Radio, badge: 'LIVE' },
+  { label: 'Live Calls', href: '/dashboard/calls/live', icon: Radio, badge: 'LIVE' },
   { label: 'Call History', href: '/dashboard/calls', icon: Phone },
   { label: 'Clients', href: '/dashboard/clients', icon: Users },
   { label: 'Campaigns', href: '/dashboard/campaigns', icon: Megaphone },

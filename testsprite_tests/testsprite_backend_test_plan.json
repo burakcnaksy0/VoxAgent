@@ -1,0 +1,17 @@
+[
+  {
+    "id": "TC001",
+    "title": "post_api_webhooks_vapi_agencyid_valid_transcript_event",
+    "description": "Verify that a POST request to /api/webhooks/vapi/[agencyId] with a valid transcript event payload returns a 200 status with { ok: true } and that the transcript event is correctly persisted in the call_events database table."
+  },
+  {
+    "id": "TC002",
+    "title": "post_api_webhooks_vapi_agencyid_malformed_payload",
+    "description": "Verify that a POST request to /api/webhooks/vapi/[agencyId] with a malformed payload returns a 500 status with { error: 'Internal error' } and that no transcript event is persisted in the call_events database table."
+  },
+  {
+    "id": "TC003",
+    "title": "post_api_webhooks_vapi_agencyid_database_failure",
+    "description": "Simulate a database failure during a POST request to /api/webhooks/vapi/[agencyId] and verify that the response is a 500 status with { error: 'Internal error' } and that no transcript event is persisted."
+  }
+]

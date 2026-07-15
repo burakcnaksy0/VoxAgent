@@ -39,11 +39,14 @@ export async function POST(req: Request) {
       .eq('id', userData.agency_id)
       .single()
 
-    if (!agency?.vapi_api_key_encrypted) {
-      return NextResponse.json({ error: 'VAPI API key not configured' }, { status: 400 })
+    let vapiKey = process.env.VAPI_PRIVATE_KEY;
+    if (agency?.vapi_api_key_encrypted) {
+      vapiKey = decrypt(agency.vapi_api_key_encrypted);
     }
 
-    const vapiKey = decrypt(agency.vapi_api_key_encrypted)
+    if (!vapiKey) {
+      return NextResponse.json({ error: 'VAPI API key not configured' }, { status: 400 })
+    }
 
     // Update campaign status
     await supabase.from('campaigns').update({ status: 'running', started_at: new Date().toISOString() }).eq('id', campaign_id)
@@ -90,11 +93,21 @@ export async function POST(req: Request) {
                 attempted_at: new Date().toISOString()
               }).eq('id', lead.id)
 
+              let formattedPhone = lead.phone.trim();
+              if (formattedPhone.startsWith('05')) {
+                formattedPhone = '+90' + formattedPhone.slice(1);
+              } else if (formattedPhone.startsWith('5') && formattedPhone.length === 10) {
+                formattedPhone = '+90' + formattedPhone;
+              } else if (!formattedPhone.startsWith('+')) {
+                formattedPhone = '+' + formattedPhone;
+              }
+
               // Dispatch VAPI call
               const vapiCall: any = await startVapiOutboundCall(vapiKey, {
                 assistantId: campaign.assistants.vapi_assistant_id,
+                phoneNumberId: process.env.VAPI_PHONE_NUMBER_ID,
                 customer: {
-                  number: lead.phone,
+                  number: formattedPhone,
                   name: lead.name,
                 }
               })

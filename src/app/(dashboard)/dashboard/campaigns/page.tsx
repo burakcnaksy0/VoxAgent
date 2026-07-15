@@ -3,7 +3,8 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Megaphone, Plus, MoreVertical, CheckCircle2, XCircle, Phone } from 'lucide-react'
+import { Megaphone, Plus, CheckCircle2, Phone } from 'lucide-react'
+import { CampaignActionMenu } from './action-menu'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Campaigns | VoxAgent' }
@@ -94,9 +95,9 @@ export default async function CampaignsPage() {
                       </div>
                     </div>
                   </div>
-                  <button className="text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                    <MoreVertical className="w-5 h-5" />
-                  </button>
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                    <CampaignActionMenu campaign={campaign} />
+                  </div>
                 </CardHeader>
                 
                 <CardContent>

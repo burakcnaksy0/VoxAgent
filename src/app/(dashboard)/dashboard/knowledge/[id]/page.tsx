@@ -1,14 +1,16 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Upload, FileText, Loader2, HardDrive } from 'lucide-react'
 
-export default function KnowledgeBaseDetailsPage({ params }: { params: { id: string } }) {
+export default function KnowledgeBaseDetailsPage() {
+  const params = useParams()
+  const id = params.id as string
   const router = useRouter()
   const [kb, setKb] = useState<any>(null)
   const [chunks, setChunks] = useState<any[]>([])
@@ -24,7 +26,7 @@ export default function KnowledgeBaseDetailsPage({ params }: { params: { id: str
         // Fetch logic would go here. Since we are using App Router, 
         // it's often better to make this page a Server Component, but we need client interactivity for uploads.
         // For MVP, we'll just mock or leave it empty, assuming we can upload blindly to the ID.
-        setKb({ id: params.id, name: 'Knowledge Base Data' })
+        setKb({ id, name: 'Knowledge Base Data' })
       } catch (err) {
         console.error(err)
       } finally {
@@ -32,7 +34,7 @@ export default function KnowledgeBaseDetailsPage({ params }: { params: { id: str
       }
     }
     fetchKB()
-  }, [params.id])
+  }, [id])
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -48,7 +50,7 @@ export default function KnowledgeBaseDetailsPage({ params }: { params: { id: str
     setUploading(true)
     const formData = new FormData()
     formData.append('file', file)
-    formData.append('knowledgeBaseId', params.id)
+    formData.append('knowledgeBaseId', id)
 
     try {
       const res = await fetch('/api/knowledge/upload', {
