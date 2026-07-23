@@ -1,0 +1,156 @@
+version: '3.8'
+
+services:
+  # 1. PostgreSQL Database with Supabase configurations & pgvector
+  db:
+    image: supabase/postgres:15.1.0.147
+    container_name: voxagent-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      JWT_SECRET: super-secret-jwt-key-with-at-least-32-characters-long
+    volumes:
+      - supabase_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. Supabase GoTrue Auth service
+  auth:
+    image: supabase/gotrue:v2.143.0
+    container_name: voxagent-auth
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgresql://postgres:postgres@db:5432/postgres?sslmode=disable
+      GOTRUE_JWT_SECRET: super-secret-jwt-key-with-at-least-32-characters-long
+      GOTRUE_JWT_EXP: 3600
+      GOTRUE_SITE_URL: http://localhost:3000
+      GOTRUE_URI_ALLOW_LIST: http://localhost:3000/*
+      GOTRUE_DISABLE_SIGNUP: "false"
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+      GOTRUE_EXTERNAL_PHONE_ENABLED: "false"
+
+  # 3. Supabase PostgREST API service
+  rest:
+    image: postgrest/postgrest:v12.2.0
+    container_name: voxagent-rest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgresql://postgres:postgres@db:5432/postgres?sslmode=disable
+      PGRST_DB_SCHEMAS: public,auth
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: super-secret-jwt-key-with-at-least-32-characters-long
+      PGRST_DB_USE_LEGACY_GUIDS: "false"
+
+  # 4. Supabase Realtime service
+  realtime:
+    image: supabase/realtime:v2.30.25
+    container_name: voxagent-realtime
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PORT: 4000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: postgres
+      DB_SSL: "false"
+      JWT_SECRET: super-secret-jwt-key-with-at-least-32-characters-long
+      REPLICATION_MODE: RLS
+      SECURE_CHANNELS: "true"
+      SLOT_NAME: supabase_realtime
+      TEMPORARY_SLOT: "true"
+
+  # 5. API Gateway / Reverse Proxy (Nginx)
+  nginx:
+    image: nginx:alpine
+    container_name: voxagent-gateway
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./supabase/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - auth
+      - rest
+      - realtime
+
+  # 6. Database Bootstrapper (Applies schema.sql after GoTrue is ready)
+  db-init:
+    image: supabase/postgres:15.1.0.147
+    container_name: voxagent-db-init
+    depends_on:
+      db:
+        condition: service_healthy
+      auth:
+        condition: service_started
+    volumes:
+      - ./supabase:/supabase
+    entrypoint: /supabase/bootstrap.sh
+
+  # 7. Next.js Web Application
+  voxagent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL:-http://localhost:8000}
+        - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzg0NTQyNTk0LCJleHAiOjIwOTk5MDI1OTR9.m5h9_7KNVVMZYFPPskkJJ5hHEAV5Kh7fhxtMy7MLS8E}
+        - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:-pk_test_mock}
+        - NEXT_PUBLIC_ABLY_API_KEY=${NEXT_PUBLIC_ABLY_API_KEY:-mock_ably_key}
+        - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+    container_name: voxagent
+    ports:
+      - "3000:3000"
+    depends_on:
+      - nginx
+      - db-init
+    env_file:
+      - .env.local
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL:-http://localhost:8000}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzg0NTQyNTk0LCJleHAiOjIwOTk5MDI1OTR9.m5h9_7KNVVMZYFPPskkJJ5hHEAV5Kh7fhxtMy7MLS8E}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3ODQ1NDI1OTQsImV4cCI6MjA5OTkwMjU5NH0.KupuGAwqPdoGwUwI1FdGwr0sbIul8x9oQlFl0zci_nA}
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:-pk_test_mock}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-sk_test_mock}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET:-whsec_mock}
+      - ENCRYPTION_SECRET=${ENCRYPTION_SECRET:-a-32-character-secret-key-here!}
+      - NEXT_PUBLIC_ABLY_API_KEY=${NEXT_PUBLIC_ABLY_API_KEY:-mock_ably_key}
+      - ABLY_API_KEY=${ABLY_API_KEY:-mock_ably_key}
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      - APP_URL=${APP_URL:-http://localhost:3000}
+      - VAPI_PRIVATE_KEY=${VAPI_PRIVATE_KEY:-mock_vapi_private_key}
+      - HUGGINGFACE_API_KEY=${HUGGINGFACE_API_KEY:-hf_mock_huggingface_api_key}
+    entrypoint: >
+      sh -c "
+        socat TCP-LISTEN:8000,fork TCP:nginx:8000 &
+        node server.js
+      "
+    restart: unless-stopped
+
+volumes:
+  supabase_db:
+    driver: local
+
+networks:
+  default:
+    name: voxagent-network

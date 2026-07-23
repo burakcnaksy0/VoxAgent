@@ -1,0 +1,11 @@
+node_modules
+.next
+.git
+.gitignore
+.agents
+*.md
+.env.local
+test_contacts.csv
+test_knowledge.txt
+.vscode
+.vercel
