@@ -32,6 +32,8 @@ services:
     environment:
       GOTRUE_API_HOST: 0.0.0.0
       GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: http://localhost:8000/auth/v1
+      GOTRUE_API_EXTERNAL_URL: http://localhost:8000/auth/v1
       GOTRUE_DB_DRIVER: postgres
       GOTRUE_DB_DATABASE_URL: postgresql://postgres:postgres@db:5432/postgres?sslmode=disable
       GOTRUE_JWT_SECRET: super-secret-jwt-key-with-at-least-32-characters-long
@@ -78,6 +80,10 @@ services:
       SECURE_CHANNELS: "true"
       SLOT_NAME: supabase_realtime
       TEMPORARY_SLOT: "true"
+      RLIMIT_NOFILE: "10000"
+      SECRET_KEY_BASE: Up3r53cr3753cr37k3yB453w7hL345764Ch4r4c73r5Up3r53cr3753cr37k3y
+      APP_NAME: realtime
+      API_HOST: localhost
 
   # 5. API Gateway / Reverse Proxy (Nginx)
   nginx:

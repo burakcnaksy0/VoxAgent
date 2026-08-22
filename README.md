@@ -1,147 +1,40 @@
 # VoxAgent
 
-**The Ultimate White-label AI Voice Platform for Agencies and Enterprises.**
-
-VoxAgent is a multi-tenant B2B SaaS platform that enables agencies to instantly deploy, manage, and resell AI-powered voice receptionists and outbound sales dialers under their own brand.
+> A production-ready, multi-tenant B2B SaaS platform for creating, managing, and reselling AI-powered voice receptionists and outbound dialers under a white-label brand.
 
 ---
 
-## Overview
+## 2. Project Overview
 
-VoxAgent bridges the gap between advanced conversational AI and everyday businesses. It provides a beautiful, fully functional dashboard where agencies can create AI voice assistants, upload knowledge bases (PDFs, text) for RAG (Retrieval-Augmented Generation), run outbound calling campaigns, and monitor call analytics. 
+VoxAgent is a highly scalable, multi-tenant software-as-a-service (SaaS) platform built for marketing agencies, sales teams, and enterprise businesses. It allows users to orchestrate complex voice AI operations—such as handling inbound customer support or executing bulk outbound sales calls—without writing a single line of code.
 
-Built for scale and agency profitability, VoxAgent is designed for technical founders, marketing agencies, and enterprise sales teams who want to leverage Voice AI (via Vapi and Twilio) without building the complex orchestration, multi-tenancy, and billing infrastructure from scratch.
-
----
-
-## Dashboard Showcase
-
-Here is a preview of the VoxAgent white-label dashboard interface:
-
-### 1. AI Voice Assistant Setup
-Configure custom AI behavior, select professional voices, and synchronize seamlessly with Vapi.
-![AI Assistant Setup](public/screenshots/create-assistant.png)
-
-### 2. Bulk Outbound Campaigns
-Launch parallel calling campaigns by importing contacts via CSV with custom variables.
-![Outbound Campaigns](public/screenshots/new-campaign.png)
-
-### 3. Clients & Contacts Directory
-Manage your contacts and configure automatic SMS/WhatsApp fallback channels for unanswered calls.
-![Clients Directory](public/screenshots/clients-directory.png)
-
-### 4. Subscription & Minute Top-ups
-Upgrade subscription plans and purchase minute packages that never expire.
-![Subscription & Billing](public/screenshots/billing-pricing.png)
-
-### 5. Agency Settings & White-labeling
-Customize the agency name, branding color, upload your logo, and configure custom domain routing and API keys.
-![Agency Settings](public/screenshots/agency-settings.png)
+By abstracting the complexities of telecommunications (Twilio), conversational AI orchestration (Vapi), and semantic search (Hugging Face / pgvector), VoxAgent provides a unified, white-labeled dashboard. Agencies can onboard their own clients, set up customized AI assistants, and bill them dynamically based on usage.
 
 ---
 
-## The Problem
+## 3. Problem Statement
 
-- **Missed Opportunities:** Small to medium businesses miss up to 30% of inbound calls, leading to lost revenue and poor customer experience.
-- **Expensive Scaling:** Scaling human customer support and outbound sales teams (BDRs/SDRs) is incredibly expensive, time-consuming, and prone to high turnover.
-- **High Technical Barrier:** Existing Voice AI APIs (like Vapi, Retell, Bland) are built for developers. Agencies and business owners cannot use them directly without writing extensive code.
-- **Lack of Reseller Tools:** Current SaaS solutions don't offer true white-labeling, making it hard for agencies to resell Voice AI services under their own domain and brand.
+Small to medium-sized businesses (SMBs) miss up to 30% of inbound calls, resulting in lost revenue. Simultaneously, scaling outbound sales teams (BDRs/SDRs) is expensive and slow. 
 
-Without a product like VoxAgent, agencies are forced to either ignore the AI voice revolution or spend hundreds of thousands of dollars developing a proprietary orchestration platform.
+While powerful voice AI APIs like Vapi and Retell exist, they present a significant **technical barrier**. They are built for developers, not for business owners or agencies. Furthermore, existing AI voice platforms lack **true multi-tenancy and white-labeling**, forcing agencies to sell third-party branded solutions rather than building their own brand equity. 
 
----
-
-## Our Solution
-
-VoxAgent solves this by offering a completely "business-in-a-box" solution for Voice AI:
-- **No-Code AI Configuration:** Users can define AI behavior, upload custom knowledge (RAG), and select voices without touching code.
-- **True Multi-Tenancy:** Agencies can onboard their own clients, set up isolated environments, and manage usage limits.
-- **Automated Workflows:** From uploading a CSV of leads to launching an outbound campaign of 1,000 parallel calls, everything is automated.
-- **AI-Powered Quality:** By combining Vapi's ultra-low latency voice models with Hugging Face's semantic embeddings, the AI responds instantly, accurately, and with human-like intonation.
+Agencies need a way to instantly deploy AI voice infrastructure for their clients securely, reliably, and under their own domain, with built-in billing and analytics.
 
 ---
 
-## Target Customers
+## 4. Solution
 
-| Persona | Why They Need It |
-|---------|------------------|
-| **Marketing & Lead Gen Agencies** | To upsell Voice AI services to existing clients, instantly calling new leads generated from ads. |
-| **Sales Teams & BDRs** | To automate cold calling and appointment setting, allowing human reps to focus only on warm, qualified leads. |
-| **Customer Support Centers** | To handle Tier 1 support, FAQ answering, and overflow routing 24/7. |
-| **SaaS Founders** | To bootstrap a Voice AI startup without spending 6 months building billing, auth, and LLM integrations. |
-| **Enterprises** | To deploy secure, internal HR or IT helpdesk voice assistants. |
+VoxAgent solves this by providing a "business-in-a-box" SaaS architecture. It orchestrates the underlying AI and telecom APIs while providing a secure, isolated environment for each agency and its sub-clients.
 
----
-
-## Business Value
-
-- **Uncapped ROI for Agencies:** Buy AI minutes at wholesale API costs (cents per minute) and resell at a premium SaaS subscription rate.
-- **Instant Deployment:** Launch a fully functional Voice AI SaaS in days, not months.
-- **Extreme Time Savings:** Automate thousands of outbound calls simultaneously. What takes a human team a month takes VoxAgent minutes.
-- **Operational Scalability:** Handle 1 call or 10,000 calls concurrently without hiring a single new employee.
-
----
-
-## Core Features
-
-| Feature | Description | Current Status | Future Improvements | Priority |
-|---------|-------------|----------------|---------------------|----------|
-| **White-label Dashboard** | Multi-tenant UI for agencies and their sub-clients. | ✅ Live | Custom domain routing, Custom CSS | High |
-| **Outbound Campaigns** | Upload CSV leads and trigger bulk outbound calls. | ✅ Live | Smart retry logic, Voicemail drop | High |
-| **Knowledge Base (RAG)** | Upload PDFs/TXTs to train the AI on specific business data. | ✅ Live | Web scraping, Notion integration | High |
-| **Subscription Billing** | Stripe integration for SaaS tier management. | ✅ Live | Usage-based billing (per minute) | Medium |
-| **Call Analytics** | View call logs, transcripts, and success metrics. | ✅ Live | Sentiment analysis, Call summaries | Medium |
-
----
-
-## MVP Scope
-
-**Included:**
-- User Auth & Multi-tenant Architecture (Supabase)
-- AI Voice Orchestration (Vapi API)
-- Outbound Call Triggering
-- Knowledge Base chunking and embedding (Hugging Face)
-- UI/UX based on Glassmorphism and Framer Motion
-- Stripe Checkout integration
-
-**Not Included (Current Limitations):**
-- Native mobile app.
-- Direct inbound phone number purchasing within the UI (must be configured via Twilio/Vapi dashboard).
-- Complex multi-agent transfer logic (Agent A transfers to Agent B).
-
-**Assumptions:**
-- Users will bring their own Vapi and OpenAI/Hugging Face API keys to configure their agents.
-
----
-
-## Use Cases
-
-### Use Case 1: The Real Estate Lead Qualifier
-- **Problem:** A real estate agency receives hundreds of Facebook ad leads but cannot call them fast enough.
-- **Workflow:** Leads are synced to VoxAgent. The AI immediately calls the lead, asks pre-qualification questions (budget, timeframe), and books an appointment on the agent's Calendly.
-- **Expected Result:** 10x increase in lead connection rate; agents only talk to ready-to-buy clients.
-
-### Use Case 2: 24/7 Dental Clinic Receptionist
-- **Problem:** Dental clinic misses emergency calls after hours.
-- **Workflow:** Clinic uploads their pricing PDF and FAQ to the Knowledge Base. Calls are routed to the VoxAgent assistant after 5 PM.
-- **Expected Result:** Zero missed calls, emergency appointments booked automatically, patients receive immediate answers to pricing questions.
-
----
-
-## Project Boundaries
-
-- **Not a telephony provider:** VoxAgent relies on Twilio/Vapi for SIP trunks and numbers. It does not act as a telecom carrier.
-- **Not a custom LLM:** The platform uses existing foundation models (GPT-4, Claude) via Vapi; it does not train models from scratch.
-- **Scalability limits:** Bounded by the rate limits of the underlying APIs (Vapi concurrency limits, Supabase database connections). 
-
----
-
-## Technical Architecture
-
-The platform utilizes a modern serverless edge architecture.
+**System Workflow:**
+1. An agency configures an AI Assistant with custom prompts and a Knowledge Base (PDFs/TXTs).
+2. The agency uploads a CSV of leads to a Campaign.
+3. The Next.js API securely retrieves the encrypted API keys and dispatches parallel call requests to Vapi.
+4. Vapi handles the real-time LLM interaction and Twilio telephony.
+5. Post-call, Vapi sends a webhook back to VoxAgent, which securely updates the Supabase database with the call transcript, status, and billing usage.
 
 ```mermaid
-graph TD
+flowchart LR
     Client[Next.js Client UI] -->|REST / Server Actions| API[Next.js API Routes]
     API -->|Auth & Data| Supabase[(Supabase PostgreSQL)]
     API -->|Payments| Stripe[Stripe API]
@@ -152,182 +45,364 @@ graph TD
     Webhook -->|Save Transcripts| Supabase
 ```
 
-- **Frontend:** Next.js 16 (App Router), Tailwind CSS v4, Framer Motion, Radix UI.
-- **Backend:** Next.js API Routes, Server Actions.
-- **Database:** Supabase (PostgreSQL) with Row Level Security (RLS).
-- **AI Services:** Vapi (Voice Orchestration), Hugging Face (Embeddings).
-- **External APIs:** Stripe, Twilio.
+---
+
+## 5. Key Features
+
+* **Multi-Tenant White-labeling:** Agencies can upload their logos, set brand colors, and use custom domains. Data is strictly isolated via PostgreSQL Row Level Security (RLS).
+* **No-Code AI Configuration:** Users can define AI behavior, select from multiple voices, and configure system prompts directly from the UI.
+* **Knowledge Base (RAG):** Users can upload documents which are chunked, vectorized via Hugging Face, and stored in `pgvector` for the AI to perform semantic search during calls.
+* **Bulk Outbound Campaigns:** Upload CSV leads and trigger hundreds of parallel outbound calls automatically.
+* **Automated Fallbacks:** If a call is unanswered, the system automatically triggers an SMS or WhatsApp fallback message to the lead.
+* **SaaS Billing & Subscriptions:** Integrated with Stripe for monthly subscriptions and minute top-ups with atomic balance deduction.
+* **Real-time Analytics:** Track call volume, minutes used, and success rates, viewing live transcripts as calls happen.
 
 ---
 
-## Tech Stack
+## 6. Technology Stack
 
-| Technology | Purpose | Reason for choosing | Alternative considered |
-|------------|---------|---------------------|------------------------|
-| **Next.js (App Router)** | Fullstack Framework | Best SEO, React Server Components, fast API routes. | Vite/React + Node.js |
-| **Supabase** | DB, Auth, Storage | Realtime Postgres, instant APIs, built-in Auth. | Firebase, PlanetScale |
-| **Vapi** | Voice AI Engine | Lowest latency conversational AI on the market. | Retell AI, Bland AI |
-| **Tailwind CSS v4** | Styling | Rapid UI development, utility-first. | Styled Components |
-| **Framer Motion** | Animations | Smooth, physics-based UI transitions. | CSS Keyframes |
-| **Hugging Face** | Embeddings (RAG) | Cost-effective open-source embedding models. | OpenAI Embeddings |
-
----
-
-## Database
-
-Powered by **Supabase PostgreSQL**.
-
-- **Tables:** `users`, `agencies`, `assistants`, `campaigns`, `knowledge_bases`, `calls`, `subscriptions`.
-- **Security:** Strict Row Level Security (RLS) ensures users can only query data belonging to their specific `agency_id`.
-- **Storage:** Supabase Storage used for storing uploaded PDFs and CSVs.
-- **Vector Search:** `pgvector` extension utilized for semantic search across Knowledge Base chunks.
+| Technology | Purpose |
+|------------|---------|
+| **Next.js 16 (App Router)** | Fullstack Framework (Frontend UI + API Routes) |
+| **React 19** | UI Library utilizing Server Components (RSC) |
+| **Tailwind CSS v4** | Utility-first styling for the Glassmorphism UI |
+| **Supabase** | PostgreSQL Database, Auth, Storage, and Realtime subscriptions |
+| **pgvector** | PostgreSQL extension for storing and querying vector embeddings |
+| **Vapi** | Conversational AI Voice Engine orchestration |
+| **Hugging Face API** | Generating text embeddings for the Knowledge Base |
+| **Stripe** | Subscription management and usage-based billing |
+| **Docker / Docker Compose** | Local containerized development (Supabase local stack) |
 
 ---
 
-## Authentication
+## 7. Architecture
 
-- **Provider:** Supabase Auth.
-- **Flow:** JWT-based session management utilizing `@supabase/ssr` for seamless server-side and client-side auth state.
-- **Roles:** Handled at the database level. Every user belongs to an `agency`.
+VoxAgent follows a **Serverless Edge Architecture** optimized for Next.js and Vercel.
 
----
-
-## Security
-
-- **Vapi Key Encryption:** Agency API keys are AES-256 encrypted at rest before storing in the database using the `ENCRYPTION_SECRET`.
-- **Row Level Security (RLS):** Prevents cross-tenant data leakage at the PostgreSQL level.
-- **Environment Variables:** Strictly separated between client (`NEXT_PUBLIC_`) and server environments.
-- **Webhook Verification:** Incoming webhooks from Vapi and Stripe are verified cryptographically.
+* **Client Layer (RSC & Client Components):** Utilizes React Server Components for fast initial page loads and SEO, mixed with Client Components (Zustand, Framer Motion) for interactive dashboards.
+* **API / Service Layer (Next.js API Routes):** Acts as the secure orchestrator. It handles business logic, decrypts API keys, checks billing balances, and communicates with external APIs (Vapi, Stripe).
+* **Persistence Layer (Supabase/PostgreSQL):** The single source of truth. All data access is mediated through Row Level Security (RLS) policies ensuring strict tenant isolation.
+* **Webhook Layer:** Asynchronous endpoints (`/api/webhooks/*`) that receive out-of-band updates from Vapi (call transcripts) and Stripe (payment success), updating the database safely.
 
 ---
 
-## API Documentation
+## 8. Project Structure
 
-### `POST /api/campaigns/launch`
-- **Description:** Triggers a bulk outbound calling campaign.
-- **Auth Required:** Yes (Session JWT)
-- **Request:** `{ "campaignId": "uuid" }`
-- **Response:** `{ "success": true, "callsTriggered": 150 }`
-
-### `POST /api/knowledge/upload`
-- **Description:** Uploads a document, chunks it, creates embeddings, and stores in Vector DB.
-- **Auth Required:** Yes
-- **Request:** `FormData` containing file and `assistantId`.
-- **Response:** `{ "success": true, "chunksProcessed": 45 }`
-
-### `POST /api/webhooks/vapi/[agencyId]`
-- **Description:** Receives end-of-call reports from Vapi.
-- **Auth Required:** No (Uses cryptographic signature)
-- **Request:** Vapi standard webhook payload.
-- **Response:** 200 OK
+```text
+voxagent/
+├── src/
+│   ├── app/
+│   │   ├── (auth)/             # Login and Registration routes
+│   │   ├── (dashboard)/        # Main app (Campaigns, Assistants, Billing)
+│   │   └── api/                # Next.js API Routes (REST endpoints & Webhooks)
+│   ├── components/             # Reusable UI components (Radix UI, Shadcn)
+│   ├── lib/                    # Core services (Supabase, Vapi, Billing, Crypto)
+│   └── types/                  # TypeScript interfaces and DB schema types
+├── supabase/                   # Supabase configuration, schema.sql, migrations
+├── design-system/              # Brand guidelines and design tokens
+├── docker-compose.yml          # Local Supabase development environment
+└── package.json                # Project dependencies
+```
 
 ---
 
-## Environment Variables
+## 9. How It Works (Request Flow)
 
-| Variable | Description | Required | Example |
-|----------|-------------|----------|---------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL | Yes | `https://xyz.supabase.co` |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase Anon Key | Yes | `eyJhbG...` |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase admin bypass key | Yes | `eyJhbG...` |
-| `STRIPE_SECRET_KEY` | Stripe backend key | Yes | `sk_test_...` |
-| `ENCRYPTION_SECRET` | 32-char string for AES-256 | Yes | `my-super-secret-32-char-key-here!`|
-| `VAPI_PRIVATE_KEY` | Global Vapi fallback key | No | `421d75ef...` |
-| `HUGGINGFACE_API_KEY` | API key for embeddings | Yes | `hf_XdB...` |
+**Example: Launching an Outbound Campaign**
 
----
-
-## Installation & Running Locally
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/your-username/voxagent.git
-   cd voxagent
-   ```
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-3. **Configure Environment:**
-   Copy `.env.example` to `.env.local` and fill in your Supabase, Stripe, and Hugging Face keys.
-4. **Run the Development Server:**
-   ```bash
-   npm run dev
-   ```
-5. **Access the App:** Navigate to `http://localhost:3000`
+1. **Client Request:** The user clicks "Launch Campaign". The client sends a `POST` request to `/api/campaigns/launch` with the `campaign_id`.
+2. **Authentication & Authorization:** The API verifies the Supabase JWT and checks if the user has access to the requested `campaign_id` (via RLS and explicit checks).
+3. **Billing Check:** The `getAvailableMinutes` service checks if the agency has enough minute balance to execute the calls.
+4. **Key Decryption:** The agency's encrypted Vapi API key is retrieved from the DB and decrypted using the server-side `ENCRYPTION_SECRET`.
+5. **Execution:** The API fetches all `pending` leads for the campaign and iteratively dispatches `startVapiOutboundCall` requests.
+6. **State Update:** Leads are marked as `calling` and the campaign status changes to `running`.
+7. **Asynchronous Completion:** When calls finish, Vapi triggers a `POST` to `/api/webhooks/vapi/[agencyId]`, which saves the transcript, calculates the cost, and atomically deducts minutes from the agency's balance.
 
 ---
 
-## Deployment
+## 10. Database Design
 
-VoxAgent is optimized for deployment on **Vercel**.
-1. Connect your GitHub repository to Vercel.
-2. Add the environment variables in the Vercel dashboard.
-3. Deploy.
+VoxAgent relies on a heavily relational PostgreSQL structure with strict foreign key constraints and RLS.
 
-*Note: Because we use Next.js App Router and Server Actions, Vercel edge caching and serverless functions handle scale automatically.*
+```mermaid
+erDiagram
+    AGENCIES ||--o{ USERS : "has"
+    AGENCIES ||--o{ SUB_CLIENTS : "manages"
+    AGENCIES ||--o{ ASSISTANTS : "owns"
+    AGENCIES ||--o{ CAMPAIGNS : "runs"
+    AGENCIES ||--o{ BILLING_USAGE : "incurs"
+    
+    KNOWLEDGE_BASES ||--o{ KNOWLEDGE_CHUNKS : "contains"
+    AGENCIES ||--o{ KNOWLEDGE_BASES : "creates"
+    
+    CAMPAIGNS ||--o{ CAMPAIGN_LEADS : "targets"
+    CAMPAIGN_LEADS }o--|| CALLS : "results_in"
+    
+    ASSISTANTS ||--o{ CALLS : "handles"
+    SUB_CLIENTS ||--o{ CALLS : "receives"
+```
 
----
-
-## Testing Strategy
-
-- **Linting & Type Checking:** Enforced strictly via `eslint` and `tsc` during the CI/CD pipeline.
-- **Manual QA:** End-to-end testing of the call triggering flow using dummy Twilio numbers.
-- **Future Improvements:** Implementation of Playwright for automated E2E testing of the agency dashboard workflows.
-
----
-
-## Known Limitations
-
-- **Concurrency Handling:** Currently relies on Vapi's internal queueing. If an agency triggers 10,000 calls at once, it may hit Vapi rate limits unless specifically negotiated with their enterprise tier.
-- **Knowledge Base File Types:** Currently limited to PDF, TXT, and CSV. No support for direct URL scraping yet.
-
----
-
-## Roadmap
-
-- **Short Term (Q3):** Usage-based billing (charge clients per AI minute via Stripe Metered Billing), Dashboard Analytics overhaul.
-- **Mid Term (Q4):** Direct phone number purchasing via Twilio integration inside the UI, Calendar integrations (Google Calendar, Outlook) for appointment setting.
-- **Long Term (Next Year):** AI Agent transfer (transferring a call from AI to a Human Agent in a browser-based softphone), Custom LLM fine-tuning.
+* **`agencies`**: The core multi-tenant entity. All data relates back to an agency.
+* **`knowledge_chunks`**: Stores text chunks and their `vector(384)` embeddings for RAG.
+* **`calls`**: Central record for billing and analytics, linking the Assistant, Sub-client, and Agency.
 
 ---
 
-## Competitor Comparison
+## 11. API Documentation
 
-| Feature | VoxAgent | Bland AI | Custom Agency Build |
-|---------|----------|----------|---------------------|
-| **Target Audience** | SaaS Resellers & Agencies | Developers & Enterprises | The Agency Itself |
-| **White-labeling** | ✅ True Multi-tenant | ❌ API Only | ❌ Internal Use Only |
-| **Speed to Market**| Instant | Requires custom dev | Months of coding |
-| **Cost** | Fixed SaaS + API Costs | High Per-Minute Cost | High Capital Expenditure |
-| **Unique Advantage**| Ready-to-sell business | Highly customizable | Total ownership |
+While the frontend uses Server Actions for basic mutations, core business logic is exposed via Next.js REST API routes.
+
+### Launch Campaign
+| Method | Endpoint | Description |
+| ------ | -------- | ----------- |
+| POST   | `/api/campaigns/launch` | Triggers parallel outbound calls for pending leads. |
+
+**Request Example:**
+```json
+{
+  "campaign_id": "uuid-of-the-campaign"
+}
+```
+
+**Response Example:**
+```json
+{
+  "success": true,
+  "message": "Campaign launched",
+  "summary": {
+    "total": 150,
+    "dispatched": 148,
+    "failed": 2,
+    "results": [...]
+  }
+}
+```
+
+### Vapi Webhook
+| Method | Endpoint | Description |
+| ------ | -------- | ----------- |
+| POST   | `/api/webhooks/vapi/[agencyId]` | Receives end-of-call reports and transcripts. |
 
 ---
 
-## Why Customers Should Buy This Product
+## 12. Validation
 
-If you are an agency owner, building a secure, scalable platform with Stripe billing, Supabase authentication, and Vapi orchestration will cost you $30,000+ in developer salaries and 4 months of time. 
-
-**VoxAgent gives you the entire infrastructure today.** You can focus on marketing, selling to local businesses, and generating revenue immediately. You aren't just buying software; you are buying a scalable business asset.
-
----
-
-## Contributing
-
-Contributions are welcome! Please create an issue to discuss the proposed changes before submitting a Pull Request. Ensure your code passes `npm run lint` and `npm run build`.
+Data validation happens at multiple layers:
+1. **Client-Side:** HTML5 attributes and React state validation provide immediate user feedback.
+2. **API Layer:** `req.json()` payloads are strictly checked for missing or malformed fields (e.g., verifying `campaign_id` exists before querying).
+3. **Database Layer (PostgreSQL CHECK constraints):** 
+   - `plan IN ('trial', 'starter', 'growth', 'pro')`
+   - `status IN ('draft', 'running', 'completed', 'cancelled')`
+   Ensures data integrity even if the application layer fails.
 
 ---
 
-## License
+## 13. Exception Handling
 
-Copyright © 2026. All rights reserved. (Update with appropriate Open Source or Proprietary license depending on distribution strategy).
-
----
-
-## Contact
-
-For support, investment inquiries, or enterprise licensing, please reach out via GitHub Issues or contact the maintainers directly.
+The project implements a robust error handling strategy:
+* **API Routes:** All API logic is wrapped in `try/catch` blocks. Known errors return specific HTTP status codes (e.g., `401 Unauthorized`, `402 Payment Required` for insufficient balance, `403 Forbidden`).
+* **External API Failures:** If Vapi or Stripe APIs timeout or return errors, the error is caught, logged safely (without exposing secrets), and the lead/call status is marked as `failed` to prevent infinite loops.
+* **UI Error Boundaries:** The Next.js frontend utilizes `error.tsx` boundaries to prevent the entire dashboard from crashing if a specific component fails to load.
 
 ---
 
-*Generated by AI based on project analysis. Last updated: July 2026.*
+## 14. Configuration
+
+Sensitive information is strictly managed via environment variables. Client-side variables are prefixed with `NEXT_PUBLIC_`.
+
+**`.env.local` Example:**
+```bash
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=http://localhost:8000
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhb...
+SUPABASE_SERVICE_ROLE_KEY=eyJhb...
+
+# Stripe Configuration
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+# Security & Encryption
+ENCRYPTION_SECRET=your-32-character-secure-key-here!
+
+# AI Services
+HUGGINGFACE_API_KEY=hf_...
+VAPI_PRIVATE_KEY=...
+```
+
+*Note: `ENCRYPTION_SECRET` is crucial. It is used with AES-256-GCM to encrypt users' Vapi API keys before storing them in the database.*
+
+---
+
+## 15. Installation & Setup
+
+### Requirements
+* Node.js 20+
+* Docker & Docker Compose (for local Supabase)
+* Git
+
+### Step 1: Clone the repository
+```bash
+git clone https://github.com/your-username/voxagent.git
+cd voxagent
+```
+
+### Step 2: Install Dependencies
+```bash
+npm install
+```
+
+### Step 3: Environment Setup
+Copy the example environment file and fill in your keys.
+```bash
+cp .env.example .env.local
+```
+
+### Step 4: Start Local Database (Supabase)
+```bash
+docker-compose up -d
+```
+*(This will start PostgreSQL, GoTrue Auth, PostgREST, and Realtime services, and automatically apply the `schema.sql`)*
+
+### Step 5: Run the Next.js App
+```bash
+npm run dev
+```
+Access the application at `http://localhost:3000`.
+
+---
+
+## 16. Docker
+
+The project includes a comprehensive `docker-compose.yml` specifically designed to emulate the Supabase cloud environment locally. 
+
+It spins up:
+* **`db`**: PostgreSQL with the `pgvector` extension.
+* **`auth`**: Supabase GoTrue for JWT authentication.
+* **`rest`**: PostgREST for automatic API generation.
+* **`realtime`**: For live dashboard updates.
+* **`db-init`**: A bootstrapper that automatically injects `supabase/schema.sql` on first run.
+
+This ensures that local development exactly mirrors production behavior, especially regarding RLS policies and vector search.
+
+---
+
+## 17. Testing
+
+Quality assurance is maintained through static analysis and manual workflows:
+* **Linting & Type Checking:** `npm run lint` (ESLint) and `tsc --noEmit` ensure code quality and strict TypeScript adherence.
+* **TestSprite Integration:** The `.agents/testsprite_tests` directory contains bootstrap configurations for automated API and UI testing via the TestSprite MCP server.
+* **Local QA:** Using the local Docker stack ensures database triggers (like the atomic billing deduction) can be tested safely without incurring cloud costs.
+
+---
+
+## 18. Example Usage
+
+**Creating a Call Programmatically via Next.js Server Action**
+*(This demonstrates how the internal services interact)*
+
+```typescript
+import { startVapiOutboundCall } from '@/lib/vapi';
+import { decrypt } from '@/lib/encryption';
+
+// Inside a secure API route or Server Action
+const rawKey = decrypt(agency.vapi_api_key_encrypted);
+
+const vapiCall = await startVapiOutboundCall(rawKey, {
+  assistantId: "vapi-assistant-uuid",
+  customer: {
+    number: "+1234567890",
+    name: "John Doe",
+  }
+});
+
+console.log("Call dispatched with ID:", vapiCall.id);
+```
+
+---
+
+## 19. Error Handling & Common Problems
+
+* **`402 Payment Required` on Campaign Launch:** 
+  * *Problem:* The agency has exhausted its monthly minutes and top-up balance.
+  * *Solution:* The UI prompts the user to visit the Billing page to purchase a top-up package.
+* **`VAPI API key not configured`:**
+  * *Problem:* The agency hasn't saved their API key in Settings.
+  * *Solution:* Reroute user to the Agency Settings page to input their Vapi Key.
+* **`relation "knowledge_chunks" does not exist`:**
+  * *Problem:* The local database wasn't bootstrapped correctly.
+  * *Solution:* Ensure Docker containers are fully running and `schema.sql` was applied. Restart `docker-compose up -d --build`.
+
+---
+
+## 20. Performance & Scalability
+
+* **Vercel Edge Network:** The frontend and API routes are designed to be deployed on Vercel, benefiting from Edge caching and Serverless auto-scaling.
+* **pgvector Indexing:** The `knowledge_chunks` table uses an `ivfflat` index (`CREATE INDEX ON knowledge_chunks USING ivfflat (embedding vector_cosine_ops);`). This ensures that semantic searches for RAG remain blazing fast even as the knowledge base grows to millions of chunks.
+* **Connection Pooling:** In production, Supabase handles connection pooling (PgBouncer/Supavisor) to prevent the Serverless API functions from exhausting database connections during a massive bulk campaign launch.
+* **Atomic Transactions:** Billing deductions (`deduct_agency_minutes`) are executed via PostgreSQL functions with `FOR UPDATE` row locks to prevent race conditions during high-concurrency call completions.
+
+---
+
+## 21. Security Considerations
+
+VoxAgent is built with enterprise-grade security principles:
+* **Row Level Security (RLS):** Implemented on *every* database table. Even if the Next.js API had a vulnerability, the PostgreSQL engine strictly blocks users from querying data where `agency_id != get_agency_id()`.
+* **Encryption at Rest:** 3rd party API keys (Vapi) are encrypted using AES-256-GCM before being stored in the database. They are only decrypted in memory during an API request.
+* **Secure Webhooks:** Webhooks endpoints (Stripe, Vapi) verify cryptographic signatures to prevent malicious actors from faking call completions or payments.
+* **Environment Isolation:** Keys prefixed with `NEXT_PUBLIC_` are safe for the browser. All other keys (like `SUPABASE_SERVICE_ROLE_KEY`) are strictly confined to the Node.js server environment.
+
+---
+
+## 22. Development Guidelines
+
+* **Adding a new Table/Entity:** 
+  1. Add it to `supabase/schema.sql`.
+  2. **Crucial:** Always add an `agency_id` column and an RLS policy (`FOR ALL USING (agency_id = get_agency_id())`).
+  3. Generate TypeScript types.
+* **Adding a new API Route:**
+  Place it in `src/app/api/...`. Always verify the user session via `@supabase/ssr` before processing any logic.
+* **State Management:** Use `Zustand` for complex client-side state (like campaign building steps) and React Server Components for standard data fetching.
+
+---
+
+## 23. Future Improvements
+
+* **High Priority:** 
+  * Direct Twilio integration within the UI to allow agencies to purchase phone numbers without leaving the VoxAgent dashboard.
+* **Medium Priority:**
+  * Smart Retry Logic: Automatically reschedule failed outbound calls (e.g., "busy" or "no-answer") for a later time.
+  * Voicemail Drop: Detect answering machines and leave a pre-recorded audio file.
+* **Low Priority:**
+  * Native web-scraping for Knowledge Base generation (input a URL instead of a PDF).
+
+---
+
+## 24. Learning / Concepts Demonstrated
+
+This project serves as a masterclass in modern full-stack development:
+* **Multi-tenant SaaS Architecture:** Demonstrating how to build secure, scalable B2B applications using PostgreSQL RLS.
+* **AI Orchestration:** Managing asynchronous flows between LLMs, telephony systems, and databases.
+* **RAG Implementation:** Practical application of text chunking and vector embeddings (`pgvector` + Hugging Face) in a production environment.
+* **Atomic Billing:** Safely handling financial usage tracking in high-concurrency distributed systems.
+
+---
+
+## 25. FAQ
+
+**Why Next.js API Routes instead of a separate backend (like Spring Boot or Express)?**
+To reduce operational complexity and latency. Since VoxAgent relies heavily on React Server Components, keeping the API logic in Next.js allows for seamless type sharing, unified deployment (Vercel), and faster iterations.
+
+**Why use Vapi instead of building raw Twilio + OpenAI integrations?**
+Conversational AI requires ultra-low latency (under 500ms) to feel natural. Handling WebRTC audio streaming, interruption detection (barge-in), and LLM context management from scratch is highly complex. Vapi abstracts this, allowing VoxAgent to focus on business logic, orchestration, and multi-tenancy.
+
+**How does the system prevent an agency from accessing another agency's data?**
+Through PostgreSQL Row Level Security (RLS). Every table has a policy that executes `get_agency_id()` based on the authenticated user's JWT. The database physically prevents querying rows that do not match the user's agency.
+
+---
+
+## 26. License
+
+Copyright © 2026. All rights reserved.
+
+*(This is a proprietary commercial project. Unauthorized copying, distribution, or modification is strictly prohibited.)*
